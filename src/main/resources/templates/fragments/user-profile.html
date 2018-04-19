@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+  <h3>Profile</h3>
+  <hr />
+  <div>
+    <p> Username: <b th:text="${user?.username}"></b></p>
+    <p> Email: <b th:text="${user?.email}"></b></p>
+    <a href="/edit-profile-change-password">Change password</a>
+  </div>
+</div>

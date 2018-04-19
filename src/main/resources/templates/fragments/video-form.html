@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<div class="container">
+  <div class="row">
+    <h3>Video form</h3>
+    <hr />
+    <div class="col-md-6">
+      <form id="employee-info" th:action = "@{/api/jsonVideos}"
+            method="POST"
+            xmlns:th="http://www.w3.org/1999/xhtml">
+
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" name="title" th:value="${employee?.firstName}" />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea class="form-control" id="description" name="description"  th:inline="text">
+            [[${employee?.description}]]
+          </textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="department">Category</label>
+          <select class="form-control" name="department" id="department">
+            <option th:each="c : ${departments}" th:value="${c.id}" th:text="${c.name}" th:selected="${employee?.department?.id == c.id}"></option>
+          </select>
+        </div>
+
+        <div class="employee-tags" style="margin-bottom: 10px;" th:if="${employee != null}">
+          <span class="badge badge-success" th:each="tag : ${employee.tags}" th:inline="text">
+            [[${{tag.name}}]]
+            <button type="button" class="btn btn-default btn-sm" th:onclick="'removeTag(\'' + ${employee.id} + '\', \'' + ${tag.name} + '\')'">
+              <span class="glyphicon glyphicon-remove-circle" style="color: #940000;"></span>
+            </button>
+          </span>
+        </div>
+
+        <div class="input-group" style="margin-bottom: 10px;" th:if="${employee != null}">
+          <input type="text" class="form-control" placeholder="Tag name" id="tag-input"/>
+
+          <span class="input-group-btn">
+            <button class="btn btn-secondary" type="button" th:onclick="'addTag(\'' + ${employee?.id} + '\')'">Add tag!</button>
+          </span>
+        </div>
+
+        <button type="button" th:onclick="'submitForm(\''+ ${employee?.id} + '\')'" class="btn btn-primary">
+          Submit
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

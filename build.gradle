@@ -1,0 +1,63 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.doozy'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    //JPA
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.data:spring-data-jpa')
+    compile('org.springframework.data:spring-data-rest-webmvc')
+
+    //compile("org.springframework.data:spring-data-mongodb")
+
+    compile('org.hibernate:hibernate-search-orm:5.5.6.Final')
+    compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    runtime('org.springframework.boot:spring-boot-devtools')
+    compile('org.apache.commons:commons-lang3:3.4')
+    compile('ch.qos.logback:logback-classic:1.1.7')
+    compile('org.hibernate:hibernate-ehcache:5.0.12.Final')
+    compile('org.projectlombok:lombok:1.16.20')
+    compile('org.springframework.boot:spring-boot-configuration-processor');
+    compile group: 'com.google.guava', name: 'guava', version: '11.0.2'
+    compileJava.dependsOn(processResources)
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '1.5.9.RELEASE'
+    compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity4', version: '2.1.2.RELEASE'
+    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.2.1.RELEASE'
+
+    // JDBC drivers
+    //runtime("org.hsqldb:hsqldb")
+    runtime("mysql:mysql-connector-java:5.1.25")
+    //runtime('org.postgresql:postgresql')
+
+    testCompile('junit:junit:4.12')
+    testCompile('org.mockito:mockito-core:1.10.19')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.security:spring-security-test')
+    testCompile group: 'com.jayway.restassured', name: 'rest-assured', version: '2.9.0'
+    testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.1-groovy-2.4'
+    testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
+}

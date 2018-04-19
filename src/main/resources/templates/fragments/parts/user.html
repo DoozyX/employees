@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<li
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+  <a sec:authorize="!isAuthenticated()" href="/login">
+    <i class="fa fa-user fa-fw"></i>
+    Login
+  </a>
+  <a sec:authorize="isAuthenticated()" href="/logout">
+    Logout
+  </a>
+  <a sec:authorize="isAuthenticated()" href="/profile">
+    Profile
+  </a>
+  <!-- /.dropdown-user -->
+</li>

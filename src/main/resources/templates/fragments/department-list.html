@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+  <div class="row">
+    Categories
+    <hr />
+  </div>
+  <div class="row">
+    <ul>
+      <li th:each="department : ${departments}">
+        <a th:href="@{'/department/' + ${department.id}} + '/edit'" th:text="${{department?.name}}">Text</a>
+      </li>
+    </ul>
+  </div>
+</div>

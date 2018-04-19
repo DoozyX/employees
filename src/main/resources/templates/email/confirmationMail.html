@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Video Aggregator Account Activation</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<p>
+  Dear <span th:text="${user.username}"></span>
+</p>
+
+<p>
+  Your VA account has been created, please click on the URL below to activate it:
+</p>
+
+<p>
+  <a th:href="@{|${baseUrl}?key=${user.username}|}"
+     th:text="|${user.username}|">Activation Link</a>
+</p>
+
+<p>
+  <span>Regards, </span>
+  <br/>
+  <em>Video Aggregator 2018</em>
+</p>
+</body>
+</html>
