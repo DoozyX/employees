@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Video aggregator</title>
+  <title>Employees</title>
 
 
   <link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -155,15 +155,15 @@
 
   }
 
-  function submitCategoryForm(id){
-    var cat_title = $('#department_title').val();
+  function addDepartment(){
+    var departmentName = $('#department_title').val();
 
+    console.log("adding department " + departmentName);
     $.ajax({
       type : "POST",
-      url : "/api/departments/save",
+      url : "/api/department/save",
       data: JSON.stringify({
-        'id': id ? id : null,
-        'title': cat_title.toString()
+        'name': departmentName.toString()
       }),
       contentType : 'application/json',
       success : function(response) {
@@ -173,14 +173,34 @@
         alert('Failed!: ' + e);
       }
     });
-
   }
 
-  function deleteCategory(id){
-    console.log(id);
+  function updateDepartment(id){
+      var departmentName = $('#department_title').val();
+
+      console.log("update department " + id);
+      $.ajax({
+          type : "PATCH",
+          url : "/api/department/update",
+          data: JSON.stringify({
+	          'id': id,
+              'name': departmentName.toString()
+          }),
+          contentType : 'application/json',
+          success : function(response) {
+              alert('Success');
+          },
+          error : function(e) {
+              alert('Failed!: ' + e);
+          }
+      });
+  }
+
+  function deleteDepartment(id){
+    console.log("deleting department " + id);
     $.ajax({
       type : "DELETE",
-      url : "/api/departments/" + id,
+      url : "/api/department/" + id,
       contentType : 'application/json',
       success : function(response) {
         window.location = '/';

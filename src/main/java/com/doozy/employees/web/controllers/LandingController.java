@@ -23,42 +23,44 @@ import java.util.Optional;
 @Controller
 public class LandingController {
 
-	private final EmployeeService employeeService;
-	private final DepartmentService departmentService;
+	private final EmployeeService mEmployeeService;
+	private final DepartmentService mDepartmentService;
 
-	private static final String PAGE_ORDER_BY_CRITERIA = "name";
+	private static final String PAGE_ORDER_BY_CRITERIA = "firstName";
 
 	@Autowired
 	public LandingController(EmployeeService employeeService, DepartmentService departmentService) {
-		this.employeeService = employeeService;
-		this.departmentService = departmentService;
+		this.mEmployeeService = employeeService;
+		this.mDepartmentService = departmentService;
 	}
 
 	@Layout("layouts/master")
 	@GetMapping("/")
 	public String index(Model model, @RequestParam(required = false, defaultValue = "") String query, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "1") Integer size) {
-		Page<Department> departments;
+		Page<Employee> employees;
 		//if(query == null || query.isEmpty()) {
-			departments = departmentService.findAll(getPageable(page, size));
+		employees = mEmployeeService.findAll(getPageable(page, size));
 		//}
 		//else{
-		//	departments = departmentService.findByName(getPageable(page,size), "%" + query + "%");
+		//	departments = mDepartmentService.findByName(getPageable(page,size), "%" + query + "%");
 		//}
-		model.addAttribute("prevPageRequest", buildURIFromParams(query, departments.isFirst() ? 0: departments.getNumber() - 1, size));
-		model.addAttribute("nextPageRequest", buildURIFromParams(query, departments.isLast() ? departments.getNumber() : departments.getNumber() + 1, size));
+
+
+		model.addAttribute("prevPageRequest", buildURIFromParams(query, employees.isFirst() ? 0: employees.getNumber() - 1, size));
+		model.addAttribute("nextPageRequest", buildURIFromParams(query, employees.isLast() ? employees.getNumber() : employees.getNumber() + 1, size));
 		model.addAttribute("query", query);
-		model.addAttribute("employees", departments.getContent());
-		model.addAttribute("pageNumber", departments.getNumber());
-		model.addAttribute("prevPage", departments.isFirst() ? 0: departments.getNumber() - 1);
-		model.addAttribute("nextPage", departments.isLast() ? departments.getNumber() : departments.getNumber() + 1);
-		model.addAttribute("hasNext", departments.hasNext());
-		model.addAttribute("hasPrev", departments.hasPrevious());
+		model.addAttribute("employees", employees.getContent());
+		model.addAttribute("pageNumber", employees.getNumber());
+		model.addAttribute("prevPage", employees.isFirst() ? 0: employees.getNumber() - 1);
+		model.addAttribute("nextPage", employees.isLast() ? employees.getNumber() : employees.getNumber() + 1);
+		model.addAttribute("hasNext", employees.hasNext());
+		model.addAttribute("hasPrev", employees.hasPrevious());
 		return "fragments/contents";
 	}
 
     @GetMapping("/employee/{id}")
     public String employees(Model model, @PathVariable Long id) {
-        Optional<Employee> optEmployee = employeeService.findById(id);
+        Optional<Employee> optEmployee = mEmployeeService.findById(id);
 
 	    Employee noEmployee = new Employee();
 	    noEmployee.setFirstName("No employee with id: " + id);
@@ -68,7 +70,7 @@ public class LandingController {
     }
 
 	@Layout("layouts/master")
-	@GetMapping("/categories")
+	@GetMapping("/departments")
 	public String categories() {
 		return "fragments/department-list";
 	}
@@ -89,7 +91,7 @@ public class LandingController {
 	@GetMapping("/department/{id}/edit")
 	public String editDepartment(@PathVariable Long id, Model model) {
 		String layout = "fragments/department-form";
-		Optional<Department> department =  departmentService.findById(id);
+		Optional<Department> department =  mDepartmentService.findById(id);
 		if(department.isPresent()){
 			model.addAttribute("department", department.get());
 		}
@@ -103,7 +105,7 @@ public class LandingController {
 	@GetMapping("/department/{departmentId}")
 	public String departmentFeed(@PathVariable Long departmentId, Model model) {
 		List<Employee> employeeList = new ArrayList<>();
-		employeeService.findById(departmentId).ifPresent(employeeList::add);
+		mEmployeeService.findById(departmentId).ifPresent(employeeList::add);
 		model.addAttribute("employees", employeeList);
 		return "fragments/contents";
 	}
@@ -118,7 +120,7 @@ public class LandingController {
 	@GetMapping("/employee/{employeeId}")
 	public String loadEmployee(@PathVariable Long employeeId, Model model) {
 		String layout = "fragments/employee-details";
-		Optional<Employee> employee = employeeService.findById(employeeId);
+		Optional<Employee> employee = mEmployeeService.findById(employeeId);
 
 		if(employee.isPresent()){
 			model.addAttribute("employee", employee.get());
@@ -135,7 +137,7 @@ public class LandingController {
 	@GetMapping("/employee/{employeeId}/edit")
 	public String editEmployee(@PathVariable Long employeeId, Model model) {
 		String layout = "fragments/employee-form";
-		Optional<Employee> employee = employeeService.findById(employeeId);
+		Optional<Employee> employee = mEmployeeService.findById(employeeId);
 
 		if(employee.isPresent()){
 			model.addAttribute("employee", employee.get());

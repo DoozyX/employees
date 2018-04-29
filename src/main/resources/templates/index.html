@@ -3,75 +3,75 @@
 
 <head>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <title>Video aggregator</title>
+    <title>Employees</title>
 
-  <!-- Bootstrap Core CSS -->
-  <link href="/css/bootstrap.min.css" rel="stylesheet">
-
-
-  <!-- Custom CSS -->
-  <link href="/css/sb-admin-2.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
 
-  <!-- Custom Fonts -->
-  <link href="/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+    <!-- Custom CSS -->
+    <link href="/css/sb-admin-2.css" rel="stylesheet">
 
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-  <![endif]-->
+
+    <!-- Custom Fonts -->
+    <link href="/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
 </head>
 
 <body>
 
 <div id="wrapper">
-  <!-- Navigation -->
-  <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="./master.html">VideoAggregator</a>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="./master.html">Employees</a>
+        </div>
+        <!-- /.navbar-header -->
+
+        <div th:replace="fragments/top"></div>
+        <!-- /.navbar-top-links -->
+        <div th:replace="fragments/sidebar"></div>
+    </nav>
+
+
+    <div id="page-wrapper" style="padding: 20px;">
+
+        <div th:replace="${view}"></div>
+
+        <!--</div>-->
     </div>
-    <!-- /.navbar-header -->
 
-    <div th:replace="fragments/top"></div>
-    <!-- /.navbar-top-links -->
-    <div th:replace="fragments/sidebar"></div>
-  </nav>
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/js/bootstrap.min.js"></script>
 
-  <div id="page-wrapper" style="padding: 20px;">
+    <!-- Custom Theme JavaScript -->
+    <script src="/js/sb-admin-2.js"></script>
 
-    <div th:replace="${view}"></div>
-
-    <!--</div>-->
-  </div>
-
-  <!-- jQuery -->
-  <script src="/js/jquery.min.js"></script>
-
-  <!-- Bootstrap Core JavaScript -->
-  <script src="/js/bootstrap.min.js"></script>
-
-  <!-- Custom Theme JavaScript -->
-  <script src="/js/sb-admin-2.js"></script>
-
-  <script src="/js/sockjs.js"></script>
-  <script src="/js/stomp.js"></script>
-  <script src="/js/chat.js"></script>
+    <script src="/js/sockjs.js"></script>
+    <script src="/js/stomp.js"></script>
+    <script src="/js/chat.js"></script>
 
 </body>
 

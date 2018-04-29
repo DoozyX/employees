@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 <div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
-  <div class="row">
-    <h3>Category form</h3>
-    <hr />
-    <input type="text" id="department_title" class="form-control" th:value="${department?.name}" />
+	<div class="row">
+		<h3>Category form</h3>
+		<hr />
+		<label for="department_title">
+			Name:
+		</label>
+		<input type="text" id="department_title" class="form-control" th:value="${department?.name}" />
 
-    <button type="button" th:onclick="'submitCategoryForm(\''+ ${cat?.id} + '\')'" class="btn btn-primary">
-      Submit
-    </button>
-    <button class="btn btn-danger" type="button" th:if="${department?.id}" th:onclick="'deleteCategory(\''+ ${department.id} + '\')'">Delete</button>
-  </div>
+		<button type="button" th:onclick="'addDepartment()'" class="btn btn-primary">
+			Add
+		</button>
+
+
+		<button type="button" th:onclick="'updateDepartment(\''+ ${department?.id} + '\')'" class="btn btn-primary" th:if="${department?.id}">
+			Update
+		</button>
+
+
+		<button class="btn btn-danger" type="button" th:if="${department?.id}"
+		        th:onclick="'deleteDepartment(\''+ ${department.id} + '\')'">Delete
+		</button>
+	</div>
 </div>

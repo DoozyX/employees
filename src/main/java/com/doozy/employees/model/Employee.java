@@ -26,21 +26,21 @@ public class Employee {
 
 	@Id
 	@GeneratedValue
-    private Long id;
+    public Long id;
 
-    private String email;
-    private String password;
-    private String firstName;
-    private Gender gender;
+    public String email;
+    public String password;
+    public String firstName;
+    public Gender gender;
 
     @ManyToOne
-    private Department department;
+    public Department department;
 
-    private LocalDate birthDate;
-    private boolean activated;
-    private LocalDateTime registration;
-    private String activationCode;
-    private Role role;
+    public LocalDate birthDate;
+    public boolean activated;
+    public LocalDateTime registration;
+    public String activationCode;
+    public Role role;
 
 	public Long getId() {
 		return id;
