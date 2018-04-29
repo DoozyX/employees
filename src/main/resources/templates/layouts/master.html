@@ -1,219 +1,197 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
+	<head>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="">
-  <meta name="author" content="">
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="">
+		<meta name="author" content="">
 
-  <title>Employees</title>
-
-
-  <link href="/css/bootstrap.min.css" rel="stylesheet">
+		<title>Employees</title>
 
 
-  <link href="/css/sb-admin-2.css" rel="stylesheet">
+		<link href="/css/bootstrap.min.css" rel="stylesheet">
 
 
-  <link href="/css/font-awesome.css" rel="stylesheet" type="text/css">
+		<link href="/css/sb-admin-2.css" rel="stylesheet">
 
 
-  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-  <script src='https://www.google.com/recaptcha/api.js'></script>
-
-</head>
-
-<body>
-
-<div id="wrapper">
-  <!-- Navigation -->
-  <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">Employees</a>
-    </div>
-    <!-- /.navbar-header -->
-
-    <div th:replace="fragments/top"></div>
-    <!-- /.navbar-top-links -->
-    <div th:replace="fragments/sidebar"></div>
-  </nav>
+		<link href="/css/font-awesome.css" rel="stylesheet" type="text/css">
 
 
-  <div id="page-wrapper" style="padding: 20px;">
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<script src='https://www.google.com/recaptcha/api.js'></script>
 
-    <div th:replace="${view}"></div>
+	</head>
 
-    <!--</div>-->
-  </div>
-</div>
-<!-- jQuery -->
-<script src="/js/jquery.min.js"></script>
+	<body>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="/js/bootstrap.min.js"></script>
+		<div id="wrapper">
+			<!-- Navigation -->
+			<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/">Employees</a>
+				</div>
+				<!-- /.navbar-header -->
 
-<!-- Custom Theme JavaScript -->
-<script src="/js/sb-admin-2.js"></script>
-
-<script src="/js/sockjs.js"></script>
-<script src="/js/stomp.js"></script>
-<script src="/js/chat.js"></script>
-
-<script>
-
-  function removeTag(employeeId, tagName){
-      $.ajax({
-        type : "PATCH",
-        url : "/api/employees/"+ employeeId + "/remove-tag?tag=" + tagName,
-        contentType : 'application/json',
-        success : function(response) {
-          location.reload();
-        },
-        error : function(e) {
-          alert('Failed!: ' + e);
-        }
-      });
-  }
-
-  function addTag(employeeId){
-    var tagName = $("#tag-input").val();
-
-    $.ajax({
-      type : "PATCH",
-      url : "/api/employees/"+ employeeId + "/add-tag?tag=" + tagName,
-      contentType : 'application/json',
-      success : function(response) {
-        location.reload();
-      },
-      error : function(e) {
-        alert('Failed!: ' + e);
-      }
-    });
-  }
-
-  function deleteVideoConfirm(employeeId) {
-    if (confirm('Are you sure?'))
-    {
-      $.ajax({
-        type : "DELETE",
-        url : "/api/employees/"+ employeeId,
-        contentType : 'application/json',
-        success : function(response) {
-          window.location = '/';
-        },
-        error : function(e) {
-          alert(JSON.parse(e.responseText).exception);
-        }
-      });
-    }
-  }
-
-  function submitForm(id){
-    var $form = $('#employee-info');
-    var $ser = $form.serializeArray();
-
-    console.log(JSON.stringify({
-      'id': id ? id : null,
-      'title': $ser[0].value,
-      'description': $ser[1].value,
-      'url': $ser[2].value,
-      'department': {
-        'id': $ser[3].value
-      }
-    }));
-
-    $.ajax({
-      url: $form.attr('action'),
-      type: 'POST',
-      data: JSON.stringify({
-        'id': id ? id : null,
-        'title': $ser[0].value,
-        'description': $ser[1].value,
-        'url': $ser[2].value,
-        'department': {
-          'id': $ser[3].value
-        }
-      }),
-      contentType: 'application/json',
-      success: function (response) {
-        alert("Success");
-      },
-      error: function(e){
-        alert(JSON.parse(e.responseText).exception);
-      }
-    });
-
-  }
-
-  function addDepartment(){
-    var departmentName = $('#department_title').val();
-
-    console.log("adding department " + departmentName);
-    $.ajax({
-      type : "POST",
-      url : "/api/department/save",
-      data: JSON.stringify({
-        'name': departmentName.toString()
-      }),
-      contentType : 'application/json',
-      success : function(response) {
-        alert('Success');
-      },
-      error : function(e) {
-        alert('Failed!: ' + e);
-      }
-    });
-  }
-
-  function updateDepartment(id){
-      var departmentName = $('#department_title').val();
-
-      console.log("update department " + id);
-      $.ajax({
-          type : "PATCH",
-          url : "/api/department/update",
-          data: JSON.stringify({
-	          'id': id,
-              'name': departmentName.toString()
-          }),
-          contentType : 'application/json',
-          success : function(response) {
-              alert('Success');
-          },
-          error : function(e) {
-              alert('Failed!: ' + e);
-          }
-      });
-  }
-
-  function deleteDepartment(id){
-    console.log("deleting department " + id);
-    $.ajax({
-      type : "DELETE",
-      url : "/api/department/" + id,
-      contentType : 'application/json',
-      success : function(response) {
-        window.location = '/';
-      },
-      error : function(e) {
-        alert('Failed!: ' + e);
-      }
-    });
-  }
+				<div th:replace="fragments/top"></div>
+				<!-- /.navbar-top-links -->
+				<div th:replace="fragments/sidebar"></div>
+			</nav>
 
 
-</script>
+			<div id="page-wrapper" style="padding: 20px;">
 
-</body>
+				<div th:replace="${view}"></div>
+
+				<!--</div>-->
+			</div>
+		</div>
+		<!-- jQuery -->
+		<script src="/js/jquery.min.js"></script>
+
+		<!-- Bootstrap Core JavaScript -->
+		<script src="/js/bootstrap.min.js"></script>
+
+		<!-- Custom Theme JavaScript -->
+		<script src="/js/sb-admin-2.js"></script>
+
+		<script src="/js/sockjs.js"></script>
+		<script src="/js/stomp.js"></script>
+		<script src="/js/chat.js"></script>
+
+		<script>
+
+            function deleteEmployeeConfirm(employeeId) {
+                if (confirm('Are you sure?')) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/api/employee/" + employeeId,
+                        contentType: 'application/json',
+                        success: function (response) {
+                            window.location = '/';
+                        },
+                        error: function (e) {
+                            alert(JSON.parse(e.responseText).exception);
+                        }
+                    });
+                }
+            }
+
+            function submitEmployeeForm(id) {
+                var $form = $('#employee-info');
+                var $ser = $form.serializeArray();
+                console.log("insertin emplyee " + JSON.stringify({
+                    'id': id ? id : null,
+                    'email': $ser[0].value,
+                    'password': $ser[1].value,
+                    'firstName': $ser[2].value,
+                    'gender': $ser[3].value,
+                    'department': {
+                        'id': $ser[4].value
+                    },
+                    'birthDate': $ser[5].value,
+                    'activated': $ser[6].value,
+                    'activationCode': $ser[8].value,
+                    'role': $ser[9].value
+                }));
+
+                $.ajax({
+                    url: "/api/employee/save",
+                    type: 'POST',
+                    data: JSON.stringify({
+                        'id': id ? id : null,
+                        'email': $ser[0].value,
+                        'password': $ser[1].value,
+                        'firstName': $ser[2].value,
+                        'gender': $ser[3].value,
+                        'department': {
+                            'id': $ser[4].value
+                        },
+                        'birthDate': $ser[5].value,
+                        'activated': $ser[6].value,
+                        'activationCode': $ser[8].value,
+                        'role': $ser[9].value
+                    }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        alert("Success");
+                    },
+                    error: function (e) {
+                        alert(e);
+                    }
+                });
+
+            }
+
+            function addDepartment() {
+                var departmentName = $('#department_title').val();
+
+                console.log("adding department " + departmentName);
+                $.ajax({
+                    type: "POST",
+                    url: "/api/department/save",
+                    data: JSON.stringify({
+                        'name': departmentName.toString()
+                    }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        alert('Success');
+                    },
+                    error: function (e) {
+                        alert('Failed!: ' + e);
+                    }
+                });
+            }
+
+            function updateDepartment(id) {
+                var departmentName = $('#department_title').val();
+
+                console.log("update department " + id);
+                $.ajax({
+                    type: "PATCH",
+                    url: "/api/department/update",
+                    data: JSON.stringify({
+                        'id': id,
+                        'name': departmentName.toString()
+                    }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        alert('Success');
+                    },
+                    error: function (e) {
+                        alert('Failed!: ' + e);
+                    }
+                });
+            }
+
+            function deleteDepartment(id) {
+                console.log("deleting department " + id);
+                $.ajax({
+                    type: "DELETE",
+                    url: "/api/department/" + id,
+                    contentType: 'application/json',
+                    success: function (response) {
+                        window.location = '/';
+                    },
+                    error: function (e) {
+                        alert('Failed!: ' + e);
+                    }
+                });
+            }
+
+
+		</script>
+
+	</body>
 
 </html>

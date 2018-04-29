@@ -36,38 +36,27 @@ public class LandingController {
 
 	@Layout("layouts/master")
 	@GetMapping("/")
-	public String index(Model model, @RequestParam(required = false, defaultValue = "") String query, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "1") Integer size) {
+	public String index(Model model, @RequestParam(required = false, defaultValue = "") String query, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "12") Integer size) {
 		Page<Employee> employees;
-		//if(query == null || query.isEmpty()) {
-		employees = mEmployeeService.findAll(getPageable(page, size));
-		//}
-		//else{
-		//	departments = mDepartmentService.findByName(getPageable(page,size), "%" + query + "%");
-		//}
+		if (query == null || query.isEmpty()) {
+			employees = mEmployeeService.findAll(getPageable(page, size));
+		} else {
+			employees = mEmployeeService.findAll(getPageable(page, size));
+			//employees = mEmployeeService.findByNameLike(getPageable(page,size), "%" + query + "%");
+		}
 
 
-		model.addAttribute("prevPageRequest", buildURIFromParams(query, employees.isFirst() ? 0: employees.getNumber() - 1, size));
+		model.addAttribute("prevPageRequest", buildURIFromParams(query, employees.isFirst() ? 0 : employees.getNumber() - 1, size));
 		model.addAttribute("nextPageRequest", buildURIFromParams(query, employees.isLast() ? employees.getNumber() : employees.getNumber() + 1, size));
 		model.addAttribute("query", query);
 		model.addAttribute("employees", employees.getContent());
 		model.addAttribute("pageNumber", employees.getNumber());
-		model.addAttribute("prevPage", employees.isFirst() ? 0: employees.getNumber() - 1);
+		model.addAttribute("prevPage", employees.isFirst() ? 0 : employees.getNumber() - 1);
 		model.addAttribute("nextPage", employees.isLast() ? employees.getNumber() : employees.getNumber() + 1);
 		model.addAttribute("hasNext", employees.hasNext());
 		model.addAttribute("hasPrev", employees.hasPrevious());
 		return "fragments/contents";
 	}
-
-    @GetMapping("/employee/{id}")
-    public String employees(Model model, @PathVariable Long id) {
-        Optional<Employee> optEmployee = mEmployeeService.findById(id);
-
-	    Employee noEmployee = new Employee();
-	    noEmployee.setFirstName("No employee with id: " + id);
-
-        model.addAttribute("employee", optEmployee.orElse(noEmployee));
-        return "employee";
-    }
 
 	@Layout("layouts/master")
 	@GetMapping("/departments")
@@ -91,11 +80,10 @@ public class LandingController {
 	@GetMapping("/department/{id}/edit")
 	public String editDepartment(@PathVariable Long id, Model model) {
 		String layout = "fragments/department-form";
-		Optional<Department> department =  mDepartmentService.findById(id);
-		if(department.isPresent()){
+		Optional<Department> department = mDepartmentService.findById(id);
+		if (department.isPresent()) {
 			model.addAttribute("department", department.get());
-		}
-		else{
+		} else {
 			layout = "fragments/error";
 		}
 		return layout;
@@ -103,16 +91,32 @@ public class LandingController {
 
 	@Layout("layouts/master")
 	@GetMapping("/department/{departmentId}")
-	public String departmentFeed(@PathVariable Long departmentId, Model model) {
-		List<Employee> employeeList = new ArrayList<>();
-		mEmployeeService.findById(departmentId).ifPresent(employeeList::add);
-		model.addAttribute("employees", employeeList);
+	public String departmentFeed(@PathVariable Long departmentId, Model model, @RequestParam(required = false, defaultValue = "") String query, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "12") Integer size) {
+		Page<Employee> employees;
+		if (query == null || query.isEmpty()) {
+			employees = mEmployeeService.findByDepartmentId(getPageable(page, size), departmentId);
+		} else {
+			employees = mEmployeeService.findByDepartmentId(getPageable(page, size), departmentId);
+			//employees = mEmployeeService.findByDepartmentId(getPageable(page,size), "%" + query + "%");
+		}
+
+
+		model.addAttribute("prevPageRequest", buildURIFromParams(query, employees.isFirst() ? 0 : employees.getNumber() - 1, size));
+		model.addAttribute("nextPageRequest", buildURIFromParams(query, employees.isLast() ? employees.getNumber() : employees.getNumber() + 1, size));
+		model.addAttribute("query", query);
+		model.addAttribute("employees", employees.getContent());
+		model.addAttribute("pageNumber", employees.getNumber());
+		model.addAttribute("prevPage", employees.isFirst() ? 0 : employees.getNumber() - 1);
+		model.addAttribute("nextPage", employees.isLast() ? employees.getNumber() : employees.getNumber() + 1);
+		model.addAttribute("hasNext", employees.hasNext());
+		model.addAttribute("hasPrev", employees.hasPrevious());
 		return "fragments/contents";
 	}
 
 	@Layout("layouts/master")
 	@GetMapping("/employee/create")
-	public String employee() {
+	public String employee(Model model) {
+		model.addAttribute("roles", Employee.getRoles());
 		return "fragments/employee-form";
 	}
 
@@ -121,11 +125,12 @@ public class LandingController {
 	public String loadEmployee(@PathVariable Long employeeId, Model model) {
 		String layout = "fragments/employee-details";
 		Optional<Employee> employee = mEmployeeService.findById(employeeId);
+		model.addAttribute("roles", Employee.getRoles());
 
-		if(employee.isPresent()){
+		if (employee.isPresent()) {
 			model.addAttribute("employee", employee.get());
-		}
-		else{
+		} else {
+			System.out.println("NO EMPLOYEE");
 			layout = "fragments/error";
 		}
 
@@ -138,11 +143,11 @@ public class LandingController {
 	public String editEmployee(@PathVariable Long employeeId, Model model) {
 		String layout = "fragments/employee-form";
 		Optional<Employee> employee = mEmployeeService.findById(employeeId);
+		model.addAttribute("roles", Employee.getRoles());
 
-		if(employee.isPresent()){
+		if (employee.isPresent()) {
 			model.addAttribute("employee", employee.get());
-		}
-		else{
+		} else {
 			layout = "fragments/error";
 		}
 
@@ -150,11 +155,11 @@ public class LandingController {
 
 	}
 
-	private Pageable getPageable(Integer page, Integer size){
+	private Pageable getPageable(Integer page, Integer size) {
 		return new PageRequest(page, size, new Sort(Sort.Direction.DESC, PAGE_ORDER_BY_CRITERIA));
 	}
 
-	private static String buildURIFromParams(String searchQuery, Integer page, Integer size){
+	private static String buildURIFromParams(String searchQuery, Integer page, Integer size) {
 		return "/?query=" + searchQuery + "&page=" + page + "&size=" + size;
 	}
 }

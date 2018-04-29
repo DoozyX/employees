@@ -15,7 +15,7 @@ import java.util.Optional;
 @Profile("mock")
 @Deprecated
 @Component
-public class MockEmployeeRepository implements EmployeeRepository {
+public abstract class MockEmployeeRepository implements EmployeeRepository {
 
 	private static Map<Long, Employee> employeeMap = new HashMap<>();
 	private static Long idSequencer = 0L;

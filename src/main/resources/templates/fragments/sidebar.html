@@ -35,7 +35,7 @@
 			<li class="split-pane-divider"></li>
 			<!--/*@thymesVar id="departments" type=""*/-->
 			<li th:each="department : ${departments}">
-				<a th:href="@{/department/{departmentName}(departmentName=${department.name})}"
+				<a th:href="@{/department/{departmentName}(departmentName=${department.id})}"
 				   th:text="${department.name}"></a>
 			</li>
 		</ul>

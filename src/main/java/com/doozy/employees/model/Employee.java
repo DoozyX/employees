@@ -1,5 +1,7 @@
 package com.doozy.employees.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.stereotype.Indexed;
 
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Indexed
 @Entity
@@ -18,7 +21,7 @@ public class Employee {
         FEMALE
     }
 
-    enum Role {
+	enum Role {
 	    EMPLOYEE,
 	    MANAGER,
 	    ADMIN
@@ -34,6 +37,7 @@ public class Employee {
     public Gender gender;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Department department;
 
     public LocalDate birthDate;
@@ -130,6 +134,9 @@ public class Employee {
 		this.role = role;
 	}
 
+	public static String[] getRoles() {
+		return Stream.of(Role.values()).map(Role::name).toArray(String[]::new);
+	}
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

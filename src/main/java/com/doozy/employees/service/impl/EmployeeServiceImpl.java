@@ -49,5 +49,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		mEmployeeRepository.delete(employee);
 	}
 
-
+	@Override
+	public Page<Employee> findByDepartmentId(Pageable pageable, Long departmentId) {
+		return mEmployeeRepository.findByDepartmentId(pageable, departmentId);
+	}
 }

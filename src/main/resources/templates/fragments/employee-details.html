@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
+	<div class="employee-container">
+		<div class="row" style="margin-bottom: 20px;">
+			<a th:href="@{'/employee/' + ${employee.id} + '/edit'}" class="btn btn-primary">Edit</a>
+			<button type="button" class="btn btn-danger" th:onclick="'deleteEmployeeConfirm(\'' + ${employee.id} + '\')'">
+				Delete
+			</button>
+		</div>
+
+		<div class="row">
+			<strong> First Name: </strong>
+			<h3 th:text="${employee.firstName}"></h3>
+			<strong> Email: </strong>
+			<p th:text="${employee.email}"></p>
+			<strong> Gender: </strong>
+			<p th:text="${employee.gender}"></p>
+			<strong> Birth Date: </strong>
+			<p th:text="${employee.birthDate}"></p>
+			<strong> Activated: </strong>
+			<p th:text="${employee.activated}"></p>
+			<strong> Registration: </strong>
+			<p th:text="${employee.registration}"></p>
+			<strong> ActivationCode: </strong>
+			<p th:text="${employee.activationCode}"></p>
+			<strong> Role: </strong>
+			<p th:text="${employee.role}"></p>
+			<strong>Department:</strong>
+			<a th:href="@{'/department/' + ${employee.department.id}}"
+			   th:text="${employee.department.name}">Department</a>
+			<hr />
+		</div>
+
+	</div>
+</div>

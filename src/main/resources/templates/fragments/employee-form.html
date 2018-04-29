@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<div class="container">
+	<div class="row">
+		<h3>Video form</h3>
+		<hr />
+		<div class="col-md-6">
+			<form id="employee-info"
+			      method="POST"
+			      xmlns:th="http://www.w3.org/1999/xhtml">
+
+				<!--0-->
+				<div class="form-group">
+					<label for="email">Email</label>
+					<input type="text" class="form-control" id="email" name="email" th:value="${employee?.email}" />
+				</div>
+				<!--1-->
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input type="password" class="form-control" id="password" name="password"
+					       th:value="${employee?.password}" />
+				</div>
+				<!--2-->
+				<div class="form-group">
+					<label for="firstName">First Name</label>
+					<input type="text" class="form-control" id="firstName" name="firstName"
+					       th:value="${employee?.firstName}" />
+				</div>
+				<!--3-->
+				<div class="form-group">
+					<label>Gender</label>
+					<br />
+					<label>
+						<input type="radio" name="gender" value="0"
+						       th:checked="${employee?.gender == 0}">
+					</label>Male<br>
+					<label>
+						<input type="radio" name="gender" value="1"
+						       th:checked="${employee?.gender == 1}">
+					</label>Female<br>
+				</div>
+				<!--4-->
+				<div class="form-group">
+					<label for="department">Department</label>
+					<select class="form-control" name="department" id="department">
+						<option th:each="department : ${departments}" th:value="${department.id}"
+						        th:text="${department.name}"
+						        th:selected="${employee?.department?.id == department.id}"></option>
+					</select>
+				</div>
+				<!--5-->
+				<div class="form-group">
+					<label for="birthDate">Birth Date</label>
+					<input type="text" class="form-control" id="birthDate" name="birthDate"
+					       th:value="${employee?.birthDate}" />
+				</div>
+				<!--6-->
+				<div class="form-group">
+					<label>Activated</label>
+					<br />
+					<label>
+						<input type="radio" name="activated" value="false">
+						<!--th:selected="${employee?.gender == "MALE"}">-->
+					</label>No<br>
+					<label>
+						<input type="radio" name="activated" value="true">
+						<!--th:selected="${employee?.gender == "MALE"}">-->
+					</label>Yes<br>
+				</div>
+				<!--7-->
+				<div class="form-group">
+					<label for="registration">Registration</label>
+					<input type="text" class="form-control" id="registration" name="registration"
+					       th:value="${employee?.registration}" />
+				</div>
+				<!--8-->
+				<div class="form-group">
+					<label for="activationCode">Activation Code</label>
+					<input type="text" class="form-control" id="activationCode" name="activationCode"
+					       th:value="${employee?.activationCode}" />
+				</div>
+				<!--9-->
+				<div class="form-group">
+					<label for="role">Role</label>
+					<select class="form-control" name="role" id="role">
+						<option th:each="roleType : ${roles}" th:value="${roleType}" th:text="${roleType}"></option>
+						<!--th:selected="${employee?.role == roleType}"></option>-->
+					</select>
+				</div>
+
+				<button type="button" th:onclick="'submitEmployeeForm(\''+ ${employee?.id} + '\')'"
+				        class="btn btn-primary">
+					Submit
+				</button>
+
+				<button type="button" th:onclick="'submitEmployeeForm(\''+ ${employee?.id} + '\')'"
+				        class="btn btn-primary">
+					<Back></Back>
+				</button>
+			</form>
+		</div>
+
+	</div>
+</div>

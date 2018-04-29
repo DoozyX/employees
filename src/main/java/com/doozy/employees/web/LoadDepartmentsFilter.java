@@ -40,7 +40,6 @@ public class LoadDepartmentsFilter implements Filter {
 		Iterable<Department> categories = mDepartmentService.findAll();
 		httpRequest.setAttribute(DEPARTMENTS, categories);
 		chain.doFilter(request, response);
-
 	}
 
 	@Override
