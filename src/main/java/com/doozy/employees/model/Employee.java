@@ -17,34 +17,38 @@ import java.util.stream.Stream;
 @Entity
 public class Employee {
 	enum Gender {
-        MALE,
-        FEMALE
-    }
+		MALE,
+		FEMALE
+	}
 
-	enum Role {
-	    EMPLOYEE,
-	    MANAGER,
-	    ADMIN
-    }
+	public enum Role {
+		EMPLOYEE,
+		MANAGER,
+		ADMIN
+	}
 
 	@Id
 	@GeneratedValue
-    public Long id;
+	public Long id;
 
-    public String email;
-    public String password;
-    public String firstName;
-    public Gender gender;
+	public String username;
 
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    public Department department;
+	public String email;
+	public String password;
+	public String firstName;
 
-    public LocalDate birthDate;
-    public boolean activated;
-    public LocalDateTime registration;
-    public String activationCode;
-    public Role role;
+	public String lastName;
+	public Gender gender;
+
+	@ManyToOne
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	public Department department;
+
+	public LocalDate birthDate;
+	public boolean activated;
+	public LocalDateTime registration;
+	public String activationCode;
+	public Role role;
 
 	public Long getId() {
 		return id;
@@ -52,6 +56,14 @@ public class Employee {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getEmail() {
@@ -76,6 +88,14 @@ public class Employee {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public Gender getGender() {
@@ -137,6 +157,7 @@ public class Employee {
 	public static String[] getRoles() {
 		return Stream.of(Role.values()).map(Role::name).toArray(String[]::new);
 	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

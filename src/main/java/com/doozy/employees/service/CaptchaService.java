@@ -1,4 +1,4 @@
-package com.doozy.employees.config.captcha;
+package com.doozy.employees.service;
 
 
 import com.doozy.employees.model.exceptions.CaptchaException;
