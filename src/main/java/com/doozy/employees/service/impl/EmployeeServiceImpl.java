@@ -53,6 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
+	@Deprecated
 	public Collection<Employee> findAll() {
 		return mEmployeeRepository.findAll();
 	}
@@ -64,8 +65,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public Employee save(Employee employee) {
-		employee.setActivated(false);
-		employee.setRegistration(LocalDateTime.now());
+		if (employee.getRegistration() == null) {
+			employee.setActivated(false);
+			employee.setRegistration(LocalDateTime.now());
+		}
+
+		employee.setPassword(mPasswordEncoder.encode(employee.getPassword()));
+
 		return mEmployeeRepository.save(employee);
 	}
 
@@ -86,9 +92,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 		Employee employee = new Employee();
 		employee.setUsername(employeeDto.username);
-		String encodedPass = mPasswordEncoder.encode(employeeDto.getPassword());
 		employee.setEmail(employeeDto.getEmail());
-		employee.setPassword(encodedPass);
+		employee.setPassword(mPasswordEncoder.encode(employeeDto.getPassword()));
 		employee.setRole(Employee.Role.EMPLOYEE);
 		employee.setActivated(false);
 		employee.setRegistration(LocalDateTime.now());

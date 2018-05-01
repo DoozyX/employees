@@ -15,17 +15,28 @@
 				</div>
 				<!--1-->
 				<div class="form-group">
+					<label for="username">Username</label>
+					<input type="text" class="form-control" id="username" name="username" th:value="${employee?.username}" />
+				</div>
+				<!--2-->
+				<div class="form-group">
 					<label for="password">Password</label>
 					<input type="password" class="form-control" id="password" name="password"
 					       th:value="${employee?.password}" />
 				</div>
-				<!--2-->
+				<!--3-->
 				<div class="form-group">
 					<label for="firstName">First Name</label>
 					<input type="text" class="form-control" id="firstName" name="firstName"
 					       th:value="${employee?.firstName}" />
 				</div>
-				<!--3-->
+				<!--4-->
+				<div class="form-group">
+					<label for="lastName">Last Name</label>
+					<input type="text" class="form-control" id="lastName" name="lastName"
+					       th:value="${employee?.lastName}" />
+				</div>
+				<!--5-->
 				<div class="form-group">
 					<label>Gender</label>
 					<br />
@@ -38,7 +49,7 @@
 						       th:checked="${employee?.gender == 1}">
 					</label>Female<br>
 				</div>
-				<!--4-->
+				<!--6-->
 				<div class="form-group">
 					<label for="department">Department</label>
 					<select class="form-control" name="department" id="department">
@@ -47,13 +58,13 @@
 						        th:selected="${employee?.department?.id == department.id}"></option>
 					</select>
 				</div>
-				<!--5-->
+				<!--7-->
 				<div class="form-group">
 					<label for="birthDate">Birth Date</label>
 					<input type="text" class="form-control" id="birthDate" name="birthDate"
 					       th:value="${employee?.birthDate}" />
 				</div>
-				<!--6-->
+				<!--8-->
 				<div class="form-group">
 					<label>Activated</label>
 					<br />
@@ -66,19 +77,18 @@
 						<!--th:selected="${employee?.gender == "MALE"}">-->
 					</label>Yes<br>
 				</div>
-				<!--7-->
-				<div class="form-group">
-					<label for="registration">Registration</label>
-					<input type="text" class="form-control" id="registration" name="registration"
-					       th:value="${employee?.registration}" />
+				<!--NULL-->
+				<div class="form-group" th:if="(${employee})">
+					<label>Registration</label>
+					<p th:text="${employee?.registration}"></p>
 				</div>
-				<!--8-->
+				<!--9-->
 				<div class="form-group">
 					<label for="activationCode">Activation Code</label>
 					<input type="text" class="form-control" id="activationCode" name="activationCode"
 					       th:value="${employee?.activationCode}" />
 				</div>
-				<!--9-->
+				<!--10-->
 				<div class="form-group">
 					<label for="role">Role</label>
 					<select class="form-control" name="role" id="role">
@@ -92,9 +102,9 @@
 					Submit
 				</button>
 
-				<button type="button" th:onclick="'submitEmployeeForm(\''+ ${employee?.id} + '\')'"
+				<button type="button"
 				        class="btn btn-primary">
-					<Back></Back>
+					Back
 				</button>
 			</form>
 		</div>

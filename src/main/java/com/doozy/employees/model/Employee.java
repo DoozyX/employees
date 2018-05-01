@@ -36,7 +36,6 @@ public class Employee {
 	public String email;
 	public String password;
 	public String firstName;
-
 	public String lastName;
 	public Gender gender;
 

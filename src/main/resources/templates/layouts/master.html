@@ -111,16 +111,18 @@
                     data: JSON.stringify({
                         'id': id ? id : null,
                         'email': $ser[0].value,
-                        'password': $ser[1].value,
-                        'firstName': $ser[2].value,
-                        'gender': $ser[3].value,
+	                    'username' : $ser[1].value,
+                        'password': $ser[2].value,
+                        'firstName': $ser[3].value,
+                        'lastName': $ser[4].value,
+                        'gender': $ser[5].value,
                         'department': {
-                            'id': $ser[4].value
+                            'id': $ser[6].value
                         },
-                        'birthDate': $ser[5].value,
-                        'activated': $ser[6].value,
-                        'activationCode': $ser[8].value,
-                        'role': $ser[9].value
+                        'birthDate': $ser[7].value,
+                        'activated': $ser[8].value,
+                        'activationCode': $ser[9].value,
+                        'role': $ser[10].value
                     }),
                     contentType: 'application/json',
                     success: function (response) {
