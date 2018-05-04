@@ -122,12 +122,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 		String subject = "Activate your account";
 		String confirmationURL = appUrl + "/registrationConfirm?token=" + randomToken;
 		//TODO: send message
-		//SimpleMailMessage email = new SimpleMailMessage();
-		//email.setFrom("inc.doozy@gamil.com");
-		//email.setTo(userEmail);
-		//email.setSubject(subject);
-		//email.setText("Activate your account using the following url" + " \n" + "http://localhost:8080" + confirmationURL);
-		//mailSender.send(email);
+		SimpleMailMessage email = new SimpleMailMessage();
+		email.setFrom("inc.doozy@gamil.com");
+		email.setTo(userEmail);
+		email.setSubject(subject);
+		email.setText("Activate your account using the following url" + " \n" + "http://localhost:8080" + confirmationURL);
+		mailSender.send(email);
 	}
 
 	@Override
