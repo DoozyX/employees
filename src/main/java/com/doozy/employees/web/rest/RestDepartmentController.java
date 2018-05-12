@@ -14,12 +14,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/department", produces = MediaType.APPLICATION_JSON_VALUE)
-public class DepartmentController {
+public class RestDepartmentController {
 
 	private final DepartmentService mDepartmentService;
 
 	@Autowired
-	public DepartmentController(DepartmentService departmentService) {
+	public RestDepartmentController(DepartmentService departmentService) {
 		this.mDepartmentService = departmentService;
 	}
 

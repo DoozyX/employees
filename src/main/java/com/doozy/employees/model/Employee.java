@@ -70,9 +70,9 @@ public class Employee implements UserDetails {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	public Department department;
 
-	public LocalDate birthDate;
+	public String birthDate;
 	public boolean activated;
-	public LocalDateTime registration;
+	public String registration;
 	public String activationCode;
 
 	@ManyToOne

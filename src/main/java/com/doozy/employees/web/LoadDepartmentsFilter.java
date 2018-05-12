@@ -36,9 +36,9 @@ public class LoadDepartmentsFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		logger.debug("Loading categories in filter from DB");
-		Iterable<Department> categories = mDepartmentService.findAll();
-		httpRequest.setAttribute(DEPARTMENTS, categories);
+		logger.debug("Loading departments in filter from DB");
+		Iterable<Department> departments = mDepartmentService.findAll();
+		httpRequest.setAttribute(DEPARTMENTS, departments);
 		chain.doFilter(request, response);
 	}
 

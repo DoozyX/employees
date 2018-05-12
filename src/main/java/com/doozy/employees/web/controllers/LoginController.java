@@ -30,7 +30,7 @@ import java.util.UUID;
 import static com.doozy.employees.service.impl.EmployeeServiceImpl.VALID_TOKEN;
 
 @Controller
-public class UserController {
+public class LoginController {
 
 	private final CaptchaService captchaService;
 
@@ -41,7 +41,7 @@ public class UserController {
 	private final JavaMailSender mJavaMailSender;
 
 	@Autowired
-	public UserController(CaptchaService captchaService, EmployeeService employeeService, Environment environment, JavaMailSender mailSender) {
+	public LoginController(CaptchaService captchaService, EmployeeService employeeService, Environment environment, JavaMailSender mailSender) {
 		this.captchaService = captchaService;
 		this.mEmployeeService = employeeService;
 		this.mEnvironment = environment;

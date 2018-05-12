@@ -69,7 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public Employee save(Employee employee) {
 		if (employee.getRegistration() == null) {
 			employee.setActivated(false);
-			employee.setRegistration(LocalDateTime.now());
+			employee.setRegistration(LocalDateTime.now().toString());
 			employee.setPassword(mPasswordEncoder.encode(employee.getPassword()));
 		}
 
@@ -100,7 +100,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 
 		employee.setActivated(false);
-		employee.setRegistration(LocalDateTime.now());
+		employee.setRegistration(LocalDateTime.now().toString());
 		return mEmployeeRepository.save(employee);
 	}
 
@@ -130,7 +130,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public Employee saveAndGeneratePasswordAndSendMail(Employee employee) {
 		if (employee.getRegistration() == null) {
 			employee.setActivated(false);
-			employee.setRegistration(LocalDateTime.now());
+			employee.setRegistration(LocalDateTime.now().toString());
 		}
 		String randomToken = UUID.randomUUID().toString();
 		//TODO: LUL

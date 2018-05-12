@@ -68,6 +68,42 @@
 		<!--<script src="/js/sockjs.js"></script>-->
 		<!--<script src="/js/stomp.js"></script>-->
 		<!--<script src="/js/chat.js"></script>-->
+
+
+		<script>
+
+            function deleteEmployeeConfirm(employeeId) {
+                if (confirm('Are you sure?')) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/api/employee/" + employeeId,
+                        contentType: 'application/json',
+                        success: function (response) {
+                            window.location = '/';
+                        },
+                        error: function (e) {
+                            alert(JSON.parse(e.responseText).exception);
+                        }
+                    });
+                }
+            }
+
+            function deleteDepartment(id) {
+                console.log("deleting department " + id);
+                $.ajax({
+                    type: "DELETE",
+                    url: "/api/department/" + id,
+                    contentType: 'application/json',
+                    success: function (response) {
+                        window.location = '/';
+                    },
+                    error: function (e) {
+                        alert('Failed!: ' + e);
+                    }
+                });
+            }
+		</script>
+
 	</body>
 
 </html>

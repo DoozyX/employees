@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <div class="container" xmlns:th="http://www.w3.org/1999/xhtml">
 	<div class="row">
-		<h3>Category form</h3>
-		<hr />
-		<label for="department_title">
-			Name:
-		</label>
-		<input type="text" id="department_title" class="form-control" th:value="${department?.name}" />
 
-		<button type="button" th:onclick="'addDepartment()'" class="btn btn-primary">
-			Add
-		</button>
+		<form id="department-info"
+		      xmlns:th="http://www.w3.org/1999/xhtml"
+		      action="#" enctype="multipart/form-data"
+		      th:action="@{/department/save}"
+		      th:object="${department}"
+		      method="POST">
 
+			<h3>Department form</h3>
+			<hr />
 
-		<button type="button" th:onclick="'updateDepartment(\''+ ${department?.id} + '\')'" class="btn btn-primary" th:if="${department?.id}">
-			Update
-		</button>
+			<div class="form-group">
+				<label for="name">Name</label>
+				<input type="text" class="form-control" id="name" name="name"
+				       th:field="*{name}" />
+			</div>
+
+			<input class="btn btn-success" type="submit" value="Submit"/>
+
+			<button class="btn btn-danger" type="button" th:if="${department?.id}"
+			        th:onclick="'deleteDepartment(\''+ ${department.id} + '\')'">Delete
+			</button>
+
+		</form>
 
 
 		<button class="btn btn-danger" type="button" th:if="${department?.id}"
