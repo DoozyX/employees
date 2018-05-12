@@ -52,7 +52,7 @@ public class EmployeeController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Employee save(@RequestBody @Valid Employee employee) {
-		mEmployeeService.save(employee);
+		mEmployeeService.saveAndGeneratePasswordAndSendMail(employee);
 		return employee;
 	}
 
@@ -61,6 +61,8 @@ public class EmployeeController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Employee update(@RequestBody @Valid Employee employee) {
+		Employee oldEmployee = mEmployeeService.findByEmail(employee.email).orElseThrow(() -> new EntityNotFoundException("No employee with id: " + employee.getId()));
+		employee.setPassword(oldEmployee.getPassword());
 		mEmployeeService.save(employee);
 		return employee;
 	}

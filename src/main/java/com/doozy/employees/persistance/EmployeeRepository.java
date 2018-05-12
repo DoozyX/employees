@@ -12,6 +12,4 @@ public interface EmployeeRepository extends BaseRepository<Employee, Long> {
 	Page<Employee> findByDepartmentId(Pageable pageable, Long departmentId);
 
 	Optional<Employee> findByEmail(String email);
-
-	Employee findByUsername(String username);
 }

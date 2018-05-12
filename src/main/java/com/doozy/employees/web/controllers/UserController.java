@@ -58,13 +58,13 @@ public class UserController {
 	@GetMapping(value = "/register")
 	public String showRegistrationForm(Model model) {
 		EmployeeDto employeeDto = new EmployeeDto();
-		model.addAttribute("user", employeeDto);
+		model.addAttribute("employee", employeeDto);
 		return "fragments/register";
 	}
 
 	@Layout("layouts/master")
 	@PostMapping(value = "/register")
-	public ModelAndView registerUserAccount(@ModelAttribute("user") @Valid final EmployeeDto employeeDto, BindingResult bindingResult, Model model, HttpServletRequest httpServletRequest) {
+	public ModelAndView registerUserAccount(@ModelAttribute("employee") @Valid final EmployeeDto employeeDto, BindingResult bindingResult, Model model, HttpServletRequest httpServletRequest) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("validationErrors", bindingResult.getAllErrors());
 			if (!employeeDto.getPassword().equals(employeeDto.getMatchingPassword())) {
@@ -73,7 +73,6 @@ public class UserController {
 			model.addAttribute("user", employeeDto);
 			return new ModelAndView("fragments/register", "user", employeeDto);
 		} else {
-
 			try {
 				String response = httpServletRequest.getParameter("g-recaptcha-response");
 				captchaService.processResponse(response, getClientIP(httpServletRequest));
@@ -90,8 +89,7 @@ public class UserController {
 			if (bindingResult.hasErrors()) {
 				return new ModelAndView("fragments/register", "user", employeeDto);
 			} else {
-				String appUrl = httpServletRequest.getProtocol() + "://" + httpServletRequest.getServerName() + ":" + httpServletRequest.getServerPort();
-				mEmployeeService.createAndSendVerificationToken(registered, appUrl);
+				mEmployeeService.createAndSendVerificationToken(registered);
 
 				model.addAttribute("user", registered);
 				assert registered != null;
@@ -122,7 +120,6 @@ public class UserController {
 	@GetMapping(value = "/reset-password")
 	public String resetPassword(@RequestParam(required = false) String email, Model model) {
 		if (email != null) {
-
 			Optional<Employee> user = mEmployeeService.findByEmail(email);
 			if (!user.isPresent()) {
 				throw new UserNotFoundException();
@@ -153,9 +150,12 @@ public class UserController {
 	public String profile(Model model, Principal principal) {
 
 		String userName = principal.getName();
-		Employee u = mEmployeeService.findByUsername(userName);
+		Optional<Employee> user = mEmployeeService.findByEmail(userName);
+		if (!user.isPresent()) {
+			throw new UserNotFoundException();
+		}
 
-		model.addAttribute("user", u);
+		model.addAttribute("user", user.get());
 		return "fragments/user-profile";
 	}
 

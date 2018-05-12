@@ -38,6 +38,7 @@ dependencies {
     compile('org.hibernate:hibernate-search-orm:5.5.6.Final')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('org.thymeleaf.extras:thymeleaf-extras-springsecurity4')
     compile('org.springframework.boot:spring-boot-starter-web')
     runtime('org.springframework.boot:spring-boot-devtools')
     compile('org.apache.commons:commons-lang3:3.4')
@@ -48,7 +49,6 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '11.0.2'
     compileJava.dependsOn(processResources)
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '1.5.9.RELEASE'
-    compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity4', version: '2.1.2.RELEASE'
     compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.2.1.RELEASE'
 
     // JDBC drivers

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -27,15 +28,17 @@ public class EmployeeDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Employee employee = mEmployeeRepository.findByUsername(username);
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Optional<Employee> employeeOptional = mEmployeeRepository.findByEmail(email);
+		if (!employeeOptional.isPresent()) {
+			throw new UsernameNotFoundException("Not found");
+		}
+		Employee employee = employeeOptional.get();
 
 		return new org.springframework.security.core.userdetails.User(
 				employee.getUsername(),
 				employee.getPassword(),
-				Stream
-						.of(new SimpleGrantedAuthority(employee.getRole().toString()))
-						.collect(toList())
+				employee.getAuthorities()
 		);
 	}
 }

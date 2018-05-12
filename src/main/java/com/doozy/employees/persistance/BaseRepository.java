@@ -19,5 +19,5 @@ public interface BaseRepository<T,S> {
 
 	void delete(T entity);
 
-
+	Long count();
 }

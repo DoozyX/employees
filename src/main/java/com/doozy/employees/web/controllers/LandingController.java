@@ -5,6 +5,7 @@ import com.doozy.employees.model.Department;
 import com.doozy.employees.model.Employee;
 import com.doozy.employees.service.DepartmentService;
 import com.doozy.employees.service.EmployeeService;
+import com.doozy.employees.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -25,13 +24,15 @@ public class LandingController {
 
 	private final EmployeeService mEmployeeService;
 	private final DepartmentService mDepartmentService;
+	private final RoleService mRoleService;
 
 	private static final String PAGE_ORDER_BY_CRITERIA = "firstName";
 
 	@Autowired
-	public LandingController(EmployeeService employeeService, DepartmentService departmentService) {
+	public LandingController(EmployeeService employeeService, DepartmentService departmentService, RoleService roleService) {
 		this.mEmployeeService = employeeService;
 		this.mDepartmentService = departmentService;
+		mRoleService = roleService;
 	}
 
 	@Layout("layouts/master")
@@ -116,7 +117,7 @@ public class LandingController {
 	@Layout("layouts/master")
 	@GetMapping("/employee/create")
 	public String employee(Model model) {
-		model.addAttribute("roles", Employee.getRoles());
+		model.addAttribute("roles", mRoleService.findAll());
 		return "fragments/employee-form";
 	}
 
@@ -125,7 +126,7 @@ public class LandingController {
 	public String loadEmployee(@PathVariable Long employeeId, Model model) {
 		String layout = "fragments/employee-details";
 		Optional<Employee> employee = mEmployeeService.findById(employeeId);
-		model.addAttribute("roles", Employee.getRoles());
+		model.addAttribute("roles", mRoleService.findAll());
 
 		if (employee.isPresent()) {
 			model.addAttribute("employee", employee.get());
@@ -143,7 +144,7 @@ public class LandingController {
 	public String editEmployee(@PathVariable Long employeeId, Model model) {
 		String layout = "fragments/employee-form";
 		Optional<Employee> employee = mEmployeeService.findById(employeeId);
-		model.addAttribute("roles", Employee.getRoles());
+		model.addAttribute("roles", mRoleService.findAll());
 
 		if (employee.isPresent()) {
 			model.addAttribute("employee", employee.get());

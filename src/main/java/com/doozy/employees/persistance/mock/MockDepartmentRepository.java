@@ -51,6 +51,11 @@ public class MockDepartmentRepository implements DepartmentRepository {
 		}
 	}
 
+	@Override
+	public Long count() {
+		return null;
+	}
+
 	private synchronized Long getNextIdValue() {
 		return ++idSequencer;
 	}

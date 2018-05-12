@@ -4,16 +4,16 @@ import com.doozy.employees.model.Employee;
 import com.doozy.employees.model.exceptions.DuplicateEmailException;
 import com.doozy.employees.persistance.EmployeeRepository;
 import com.doozy.employees.persistance.PasswordResetTokenRepository;
+import com.doozy.employees.persistance.RoleRepository;
 import com.doozy.employees.persistance.VerificationTokenRepository;
 import com.doozy.employees.service.EmployeeService;
+import com.doozy.employees.service.MailService;
 import com.doozy.employees.web.dto.EmployeeDto;
 import com.doozy.employees.web.dto.EmployeeVerificationToken;
 import com.doozy.employees.web.dto.PasswordResetToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,20 +31,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public static final String VALID_TOKEN = "valid";
 
 	private final EmployeeRepository mEmployeeRepository;
+	private final RoleRepository mRoleRepository;
 
 	private final PasswordEncoder mPasswordEncoder;
 	private final VerificationTokenRepository mVerificationTokenRepository;
 	private final PasswordResetTokenRepository mPasswordResetTokenRepository;
-
-	private final JavaMailSender mailSender;
+	private final MailService mMailService;
 
 	@Autowired
-	public EmployeeServiceImpl(EmployeeRepository mEmployeeRepository, PasswordEncoder passwordEncoder, VerificationTokenRepository verificationTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, JavaMailSender mailSender) {
-		this.mEmployeeRepository = mEmployeeRepository;
-		this.mPasswordEncoder = passwordEncoder;
-		this.mVerificationTokenRepository = verificationTokenRepository;
-		this.mPasswordResetTokenRepository = passwordResetTokenRepository;
-		this.mailSender = mailSender;
+	public EmployeeServiceImpl(EmployeeRepository employeeRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
+	                           VerificationTokenRepository verificationTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, MailService mailService) {
+		mEmployeeRepository = employeeRepository;
+		mRoleRepository = roleRepository;
+		mPasswordEncoder = passwordEncoder;
+		mVerificationTokenRepository = verificationTokenRepository;
+		mPasswordResetTokenRepository = passwordResetTokenRepository;
+		mMailService = mailService;
 	}
 
 	@Override
@@ -68,9 +70,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (employee.getRegistration() == null) {
 			employee.setActivated(false);
 			employee.setRegistration(LocalDateTime.now());
+			employee.setPassword(mPasswordEncoder.encode(employee.getPassword()));
 		}
-
-		employee.setPassword(mPasswordEncoder.encode(employee.getPassword()));
 
 		return mEmployeeRepository.save(employee);
 	}
@@ -90,11 +91,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 		if (this.checkDuplicateEmail(employeeDto.getEmail())) {
 			throw new DuplicateEmailException();
 		}
-		Employee employee = new Employee();
-		employee.setUsername(employeeDto.username);
-		employee.setEmail(employeeDto.getEmail());
+		Employee employee = new Employee(employeeDto);
 		employee.setPassword(mPasswordEncoder.encode(employeeDto.getPassword()));
-		employee.setRole(Employee.Role.EMPLOYEE);
+		if (mRoleRepository.findById(3L).isPresent()) {
+			employee.setRole(mRoleRepository.findById(3L).get());
+		} else {
+			throw new IllegalStateException();
+		}
+
 		employee.setActivated(false);
 		employee.setRegistration(LocalDateTime.now());
 		return mEmployeeRepository.save(employee);
@@ -111,23 +115,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public void createAndSendVerificationToken(Employee employee, String appUrl) {
+	public void createAndSendVerificationToken(Employee employee) {
 		EmployeeVerificationToken token = new EmployeeVerificationToken();
 		String randomToken = UUID.randomUUID().toString();
 		token.setToken(randomToken);
 		token.setUser(employee);
 		mVerificationTokenRepository.save(token);
+		String confirmationURL = "http://localhost:8066/registrationConfirm?token=" + randomToken;
+		mMailService.sendEmail(employee.getEmail(), "Activate your account", "Activate your account using the following url" + " \n" + confirmationURL);
 
-		String userEmail = employee.getEmail();
-		String subject = "Activate your account";
-		String confirmationURL = appUrl + "/registrationConfirm?token=" + randomToken;
-		//TODO: send message
-		SimpleMailMessage email = new SimpleMailMessage();
-		email.setFrom("inc.doozy@gamil.com");
-		email.setTo(userEmail);
-		email.setSubject(subject);
-		email.setText("Activate your account using the following url" + " \n" + "http://localhost:8080" + confirmationURL);
-		mailSender.send(email);
+	}
+
+	@Override
+	public Employee saveAndGeneratePasswordAndSendMail(Employee employee) {
+		if (employee.getRegistration() == null) {
+			employee.setActivated(false);
+			employee.setRegistration(LocalDateTime.now());
+		}
+		String randomToken = UUID.randomUUID().toString();
+		//TODO: LUL
+		employee.setPassword(randomToken);
+		//employee.setPassword(mPasswordEncoder.encode(randomToken));
+		mMailService.sendEmail(employee.getEmail(), "Reset password Token", "Your new password is:" + " \n" + randomToken);
+		return mEmployeeRepository.save(employee);
+
+	}
+
+	@Override
+	public Long count() {
+		return mEmployeeRepository.count();
 	}
 
 	@Override
@@ -185,11 +201,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Authentication auth = new UsernamePasswordAuthenticationToken(employee, null, Collections.singletonList(new SimpleGrantedAuthority("CHANGE_PASSWORD_AUTHORITY")));
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		return null;
-	}
-
-	@Override
-	public Employee findByUsername(String username) {
-		return mEmployeeRepository.findByUsername(username);
 	}
 
 	@Override

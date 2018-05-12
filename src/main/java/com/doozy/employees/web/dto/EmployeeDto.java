@@ -1,5 +1,6 @@
 package com.doozy.employees.web.dto;
 
+import com.doozy.employees.model.Employee;
 import com.doozy.employees.web.validators.PasswordMatches;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class EmployeeDto {
 	@NotNull
 	@NotEmpty
-	public String username;
+	public String email;
 
 	@NotNull
 	@NotEmpty
@@ -21,8 +22,7 @@ public class EmployeeDto {
 
 	public String matchingPassword;
 
-	@NotNull
-	@NotEmpty
-	public String email;
-
+	public String firstName;
+	public String lastName;
+	public Employee.Gender gender;
 }

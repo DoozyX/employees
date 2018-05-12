@@ -11,8 +11,6 @@ public interface BaseEntityService<T> {
 
 	public Optional<T> findById(Long id);
 
-
-	@Deprecated
 	public Collection<T> findAll();
 
 	Page<T> findAll(Pageable pageable);
@@ -20,4 +18,6 @@ public interface BaseEntityService<T> {
 	public T save(T entity);
 
 	void delete(T entity);
+
+	Long count();
 }

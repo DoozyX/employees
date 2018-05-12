@@ -65,15 +65,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 
-		http.formLogin().loginPage("/login")
-				.and()
-				.rememberMe().key("uniqueRememberMeKey").tokenValiditySeconds(2592000)
+		http.formLogin()
+				.loginPage("/login")
+				.usernameParameter("email")
+				.passwordParameter("password")
+				//.loginProcessingUrl("/doLogin")
+				.permitAll();
+
+
+		http.rememberMe().key("uniqueRememberMeKey").tokenValiditySeconds(2592000)
 				.and()
 				.logout().clearAuthentication(true).invalidateHttpSession(true).deleteCookies("remember-me")
-				.and()
-				.authorizeRequests().antMatchers("/api/*", "/me", "/profile", "/employee/create").hasRole("WEB_USER")
-				.and()
-				.authorizeRequests().antMatchers("/edit-profile-change-password").hasAuthority("CHANGE_PASSWORD_AUTHORITY")
+				//.and()
+				//.authorizeRequests().antMatchers("/api/*", "/me", "/profile", "/employee/create").hasRole("ADMIN")
+				//.and()
+				//.authorizeRequests().antMatchers("/edit-profile-change-password").hasAuthority("CHANGE_PASSWORD_AUTHORITY")
 				.and()
 				.authorizeRequests().antMatchers("/*").permitAll();
 
