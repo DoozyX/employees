@@ -2,30 +2,30 @@ package com.doozy.employees.web.controllers;
 
 import com.doozy.employees.config.thymeleaf.Layout;
 import com.doozy.employees.model.Employee;
+import com.doozy.employees.model.EmployeeVerificationToken;
 import com.doozy.employees.model.exceptions.CaptchaException;
 import com.doozy.employees.model.exceptions.UserNotFoundException;
 import com.doozy.employees.service.CaptchaService;
 import com.doozy.employees.service.EmployeeService;
 import com.doozy.employees.web.dto.RegisterEmployeeDto;
-import com.doozy.employees.model.EmployeeVerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.doozy.employees.service.impl.EmployeeServiceImpl.VALID_TOKEN;
 
@@ -165,9 +165,10 @@ public class LoginController {
 	@Layout("layouts/master")
 	@PostMapping(value = "/edit-profile-change-password")
 	public String proceedChangeProfilePassword(@RequestParam Map<String, String> passwordDto) {
-		Employee user = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		mEmployeeService.changeUserPassword(user, passwordDto.get("password"));
-		return "redirect:/";
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		Employee employee = mEmployeeService.findByEmail(email).orElseThrow(UserNotFoundException::new);
+		mEmployeeService.changeUserPassword(employee, passwordDto.get("password"));
+		return "redirect:/logout";
 	}
 
 	private String getClientIP(HttpServletRequest request) {
@@ -177,6 +178,4 @@ public class LoginController {
 		}
 		return xfHeader.split(",")[0];
 	}
-
-
 }
