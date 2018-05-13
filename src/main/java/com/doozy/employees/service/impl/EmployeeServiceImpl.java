@@ -14,6 +14,7 @@ import com.doozy.employees.model.PasswordResetToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -142,6 +143,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
+	public void createAndSendPasswordResetTokenForEmployee(Employee employee) {
+		PasswordResetToken passwordResetToken = new PasswordResetToken();
+		String randomToken = UUID.randomUUID().toString();
+		passwordResetToken.setToken(randomToken);
+		passwordResetToken.setUser(employee);
+		mPasswordResetTokenRepository.save(passwordResetToken);
+
+		String url = "http://localhost:8066/change-password?id=" +
+				employee.getId() + "&token=" + randomToken;
+		String message = "Reset your password\r\n" + url;
+		mMailService.sendEmail(employee.getEmail(), "Reset Password", message);
+	}
+
+	@Override
 	public Long count() {
 		return mEmployeeRepository.count();
 	}
@@ -176,14 +191,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return mEmployeeRepository.findByEmail(email);
 	}
 
-	@Override
-	public void createPasswordResetTokenForEmployee(Employee employee, String token) {
-		PasswordResetToken passwordResetToken = new PasswordResetToken();
-		passwordResetToken.setToken(token);
-		passwordResetToken.setUser(employee);
-		mPasswordResetTokenRepository.save(passwordResetToken);
-
-	}
 
 	@Override
 	public String validatePasswordResetToken(Long id, String token) {

@@ -5,10 +5,8 @@ import com.doozy.employees.model.Department;
 import com.doozy.employees.model.Employee;
 import com.doozy.employees.service.DepartmentService;
 import com.doozy.employees.service.EmployeeService;
-import com.doozy.employees.service.RoleService;
 import com.doozy.employees.web.dto.DepartmentDto;
 import com.doozy.employees.web.dto.mappers.DepartmentMapper;
-import com.doozy.employees.web.dto.mappers.EmployeeMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +60,7 @@ public class DepartmentController {
 		String layout = "fragments/department-form";
 		Optional<Department> department = mDepartmentService.findById(id);
 		if (department.isPresent()) {
-			model.addAttribute("department", department.get());
+			model.addAttribute("department", DepartmentMapper.mapDepartmentToDto(department.get()));
 		} else {
 			layout = "fragments/error";
 		}

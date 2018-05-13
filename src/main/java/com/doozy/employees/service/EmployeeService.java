@@ -22,8 +22,6 @@ public interface EmployeeService extends BaseEntityService<Employee>{
 
 	Optional<Employee> findByEmail(String email);
 
-	void createPasswordResetTokenForEmployee(Employee employee, String token);
-
 	String validatePasswordResetToken(Long id, String token);
 
 	void changeUserPassword(Employee user, String password);
@@ -31,4 +29,6 @@ public interface EmployeeService extends BaseEntityService<Employee>{
 	void createAndSendVerificationToken(Employee user);
 
 	Employee saveAndGeneratePasswordAndSendMail(Employee employee);
+
+	void createAndSendPasswordResetTokenForEmployee(Employee employee);
 }

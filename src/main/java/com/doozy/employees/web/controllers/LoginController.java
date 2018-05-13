@@ -126,11 +126,7 @@ public class LoginController {
 				throw new UserNotFoundException();
 			}
 
-			String token = UUID.randomUUID().toString();
-			mEmployeeService.createPasswordResetTokenForEmployee(user.get(), token);
-
-			// Send reset password email
-			mJavaMailSender.send(constructResetTokenEmail("http://localhost:8080", token, user.get()));
+			mEmployeeService.createAndSendPasswordResetTokenForEmployee(user.get());
 
 			model.addAttribute("confirmationEmail", email);
 		}
@@ -171,7 +167,7 @@ public class LoginController {
 	public String proceedChangeProfilePassword(@RequestParam Map<String, String> passwordDto) {
 		Employee user = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		mEmployeeService.changeUserPassword(user, passwordDto.get("password"));
-		return "redirect:/login";
+		return "redirect:/";
 	}
 
 	private String getClientIP(HttpServletRequest request) {
@@ -182,20 +178,5 @@ public class LoginController {
 		return xfHeader.split(",")[0];
 	}
 
-	private SimpleMailMessage constructResetTokenEmail(String contextPath, String token, Employee user) {
-		String url = contextPath + "/change-password?id=" +
-				user.getId() + "&token=" + token;
-		String message = "Reset your password";
-		return constructEmail(message + " \r\n" + url, user);
-	}
-
-	private SimpleMailMessage constructEmail(String body, Employee user) {
-		SimpleMailMessage email = new SimpleMailMessage();
-		email.setSubject("Reset Password");
-		email.setText(body);
-		email.setTo(user.getEmail());
-		email.setFrom(Objects.requireNonNull(mEnvironment.getProperty("from.email")));
-		return email;
-	}
 
 }
