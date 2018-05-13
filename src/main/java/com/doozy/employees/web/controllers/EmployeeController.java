@@ -3,9 +3,10 @@ package com.doozy.employees.web.controllers;
 
 import com.doozy.employees.config.thymeleaf.Layout;
 import com.doozy.employees.model.Employee;
-import com.doozy.employees.service.DepartmentService;
 import com.doozy.employees.service.EmployeeService;
 import com.doozy.employees.service.RoleService;
+import com.doozy.employees.web.dto.EmployeeDto;
+import com.doozy.employees.web.dto.mappers.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,31 +19,29 @@ import java.util.Optional;
 public class EmployeeController {
 
 	private final EmployeeService mEmployeeService;
-	private final DepartmentService mDepartmentService;
 	private final RoleService mRoleService;
 
 	@Autowired
-	public EmployeeController(EmployeeService employeeService, DepartmentService departmentService, RoleService roleService) {
+	public EmployeeController(EmployeeService employeeService, RoleService roleService) {
 		mEmployeeService = employeeService;
-		mDepartmentService = departmentService;
 		mRoleService = roleService;
 	}
 
 	@Layout("layouts/master")
 	@GetMapping("/create")
-	public String employee(Model model) {
+	public String createEmployee(Model model) {
 		model.addAttribute("roles", mRoleService.findAll());
-		model.addAttribute("employee", new Employee());
+		model.addAttribute("employee", new EmployeeDto());
 		return "fragments/employee-form";
 	}
 
-	@Layout("layout/master")
-	@PostMapping(value="/save")
-	public String saveEmployee(@ModelAttribute Employee employee) {
-		//model.addAttribute("categories",categoryService.findAll());
-			System.out.println(employee.getId());
+	@Layout("layouts/master")
+	@PostMapping("/create")
+	public String insertEmployee(@ModelAttribute EmployeeDto employeeDto) {
+		Employee employee = new Employee();
+		EmployeeMapper.mapDtoToEmployee(employeeDto, employee);
 		mEmployeeService.save(employee);
-		return "redirect:/employee/" + employee.id;
+		return "redirect:/employee/" + employee.getId();
 	}
 
 	@Layout("layouts/master")
@@ -71,12 +70,24 @@ public class EmployeeController {
 		model.addAttribute("roles", mRoleService.findAll());
 
 		if (employee.isPresent()) {
-			model.addAttribute("employee", employee.get());
+			model.addAttribute("employee", EmployeeMapper.mapEmployeeToDto(employee.get()));
 		} else {
 			layout = "fragments/error";
 		}
 
 		return layout;
 
+	}
+
+	@Layout("layouts/master")
+	@PostMapping("/{employeeId}/edit")
+	public String saveEmployee(@PathVariable Long employeeId, @ModelAttribute EmployeeDto employeeDto) {
+		if (mEmployeeService.findById(employeeId).isPresent()) {
+			Employee employee = mEmployeeService.findById(employeeId).get();
+			EmployeeMapper.mapDtoToEmployee(employeeDto, employee);
+			mEmployeeService.save(employee);
+			return "redirect:/employee/" + employeeId;
+		}
+		throw new IllegalStateException();
 	}
 }

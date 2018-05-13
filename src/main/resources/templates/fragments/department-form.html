@@ -4,8 +4,7 @@
 
 		<form id="department-info"
 		      xmlns:th="http://www.w3.org/1999/xhtml"
-		      action="#" enctype="multipart/form-data"
-		      th:action="@{/department/save}"
+		      enctype="multipart/form-data"
 		      th:object="${department}"
 		      method="POST">
 
@@ -25,10 +24,5 @@
 			</button>
 
 		</form>
-
-
-		<button class="btn btn-danger" type="button" th:if="${department?.id}"
-		        th:onclick="'deleteDepartment(\''+ ${department.id} + '\')'">Delete
-		</button>
 	</div>
 </div>

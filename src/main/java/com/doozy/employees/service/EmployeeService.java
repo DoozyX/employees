@@ -1,11 +1,10 @@
 package com.doozy.employees.service;
 
 import com.doozy.employees.model.Employee;
-import com.doozy.employees.web.dto.EmployeeDto;
-import com.doozy.employees.web.dto.EmployeeVerificationToken;
+import com.doozy.employees.web.dto.RegisterEmployeeDto;
+import com.doozy.employees.model.EmployeeVerificationToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import sun.font.CoreMetrics;
 
 import java.util.Optional;
 
@@ -13,7 +12,7 @@ public interface EmployeeService extends BaseEntityService<Employee>{
 
 	Page<Employee> findByDepartmentId(Pageable pageable, Long departmentId);
 
-	Employee registerNewEmployee(EmployeeDto employeeDto);
+	Employee registerNewEmployee(RegisterEmployeeDto registerEmployeeDto);
 
 	void createVerificationToken(Employee user);
 

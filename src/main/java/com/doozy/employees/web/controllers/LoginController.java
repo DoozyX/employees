@@ -6,8 +6,8 @@ import com.doozy.employees.model.exceptions.CaptchaException;
 import com.doozy.employees.model.exceptions.UserNotFoundException;
 import com.doozy.employees.service.CaptchaService;
 import com.doozy.employees.service.EmployeeService;
-import com.doozy.employees.web.dto.EmployeeDto;
-import com.doozy.employees.web.dto.EmployeeVerificationToken;
+import com.doozy.employees.web.dto.RegisterEmployeeDto;
+import com.doozy.employees.model.EmployeeVerificationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
@@ -57,37 +57,37 @@ public class LoginController {
 	@Layout("layouts/master")
 	@GetMapping(value = "/register")
 	public String showRegistrationForm(Model model) {
-		EmployeeDto employeeDto = new EmployeeDto();
-		model.addAttribute("employee", employeeDto);
+		RegisterEmployeeDto registerEmployeeDto = new RegisterEmployeeDto();
+		model.addAttribute("employee", registerEmployeeDto);
 		return "fragments/register";
 	}
 
 	@Layout("layouts/master")
 	@PostMapping(value = "/register")
-	public ModelAndView registerUserAccount(@ModelAttribute("employee") @Valid final EmployeeDto employeeDto, BindingResult bindingResult, Model model, HttpServletRequest httpServletRequest) {
+	public ModelAndView registerUserAccount(@ModelAttribute("employee") @Valid final RegisterEmployeeDto registerEmployeeDto, BindingResult bindingResult, Model model, HttpServletRequest httpServletRequest) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("validationErrors", bindingResult.getAllErrors());
-			if (!employeeDto.getPassword().equals(employeeDto.getMatchingPassword())) {
+			if (!registerEmployeeDto.getPassword().equals(registerEmployeeDto.getMatchingPassword())) {
 				model.addAttribute("passNoMatch", "Passwords don't match!");
 			}
-			model.addAttribute("user", employeeDto);
-			return new ModelAndView("fragments/register", "user", employeeDto);
+			model.addAttribute("user", registerEmployeeDto);
+			return new ModelAndView("fragments/register", "user", registerEmployeeDto);
 		} else {
 			try {
 				String response = httpServletRequest.getParameter("g-recaptcha-response");
 				captchaService.processResponse(response, getClientIP(httpServletRequest));
 			} catch (CaptchaException e) {
-				return new ModelAndView("fragments/register", "user", employeeDto);
+				return new ModelAndView("fragments/register", "user", registerEmployeeDto);
 			}
 
-			Employee registered = mEmployeeService.registerNewEmployee(employeeDto);
+			Employee registered = mEmployeeService.registerNewEmployee(registerEmployeeDto);
 
 			if (registered == null) {
 				bindingResult.rejectValue("email", "message.regError");
 			}
 
 			if (bindingResult.hasErrors()) {
-				return new ModelAndView("fragments/register", "user", employeeDto);
+				return new ModelAndView("fragments/register", "user", registerEmployeeDto);
 			} else {
 				mEmployeeService.createAndSendVerificationToken(registered);
 

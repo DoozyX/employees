@@ -1,6 +1,6 @@
 package com.doozy.employees.model;
 
-import com.doozy.employees.web.dto.EmployeeDto;
+import com.doozy.employees.web.dto.RegisterEmployeeDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -13,8 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,13 +30,13 @@ public class Employee implements UserDetails {
 	 * Load employee basic properties from dto
 	 * Set password after
 	 * TODO: fix date missing
-	 * @param employeeDto
+	 * @param registerEmployeeDto
 	 */
-	public Employee(EmployeeDto employeeDto) {
-		email = employeeDto.email;
-		firstName = employeeDto.firstName;
-		lastName = employeeDto.lastName;
-		gender = employeeDto.gender;
+	public Employee(RegisterEmployeeDto registerEmployeeDto) {
+		email = registerEmployeeDto.email;
+		firstName = registerEmployeeDto.firstName;
+		lastName = registerEmployeeDto.lastName;
+		gender = registerEmployeeDto.gender;
 	}
 
 	public enum Gender {

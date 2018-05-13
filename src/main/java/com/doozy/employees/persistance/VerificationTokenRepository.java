@@ -1,7 +1,7 @@
 package com.doozy.employees.persistance;
 
 
-import com.doozy.employees.web.dto.EmployeeVerificationToken;
+import com.doozy.employees.model.EmployeeVerificationToken;
 
 import java.util.Date;
 

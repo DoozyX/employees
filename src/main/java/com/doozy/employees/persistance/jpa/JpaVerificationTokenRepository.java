@@ -2,7 +2,7 @@ package com.doozy.employees.persistance.jpa;
 
 
 import com.doozy.employees.persistance.VerificationTokenRepository;
-import com.doozy.employees.web.dto.EmployeeVerificationToken;
+import com.doozy.employees.model.EmployeeVerificationToken;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 

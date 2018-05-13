@@ -1,6 +1,5 @@
-package com.doozy.employees.web.dto;
+package com.doozy.employees.model;
 
-import com.doozy.employees.model.Employee;
 import lombok.Getter;
 import lombok.Setter;
 

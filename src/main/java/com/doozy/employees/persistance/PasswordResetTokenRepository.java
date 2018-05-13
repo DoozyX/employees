@@ -1,7 +1,7 @@
 package com.doozy.employees.persistance;
 
 
-import com.doozy.employees.web.dto.PasswordResetToken;
+import com.doozy.employees.model.PasswordResetToken;
 
 public interface PasswordResetTokenRepository {
 

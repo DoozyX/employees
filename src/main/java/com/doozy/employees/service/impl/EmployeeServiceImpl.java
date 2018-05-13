@@ -8,9 +8,9 @@ import com.doozy.employees.persistance.RoleRepository;
 import com.doozy.employees.persistance.VerificationTokenRepository;
 import com.doozy.employees.service.EmployeeService;
 import com.doozy.employees.service.MailService;
-import com.doozy.employees.web.dto.EmployeeDto;
-import com.doozy.employees.web.dto.EmployeeVerificationToken;
-import com.doozy.employees.web.dto.PasswordResetToken;
+import com.doozy.employees.web.dto.RegisterEmployeeDto;
+import com.doozy.employees.model.EmployeeVerificationToken;
+import com.doozy.employees.model.PasswordResetToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -87,12 +87,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee registerNewEmployee(EmployeeDto employeeDto) {
-		if (this.checkDuplicateEmail(employeeDto.getEmail())) {
+	public Employee registerNewEmployee(RegisterEmployeeDto registerEmployeeDto) {
+		if (this.checkDuplicateEmail(registerEmployeeDto.getEmail())) {
 			throw new DuplicateEmailException();
 		}
-		Employee employee = new Employee(employeeDto);
-		employee.setPassword(mPasswordEncoder.encode(employeeDto.getPassword()));
+		Employee employee = new Employee(registerEmployeeDto);
+		employee.setPassword(mPasswordEncoder.encode(registerEmployeeDto.getPassword()));
 		if (mRoleRepository.findById(3L).isPresent()) {
 			employee.setRole(mRoleRepository.findById(3L).get());
 		} else {

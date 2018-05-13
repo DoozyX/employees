@@ -1,7 +1,7 @@
 package com.doozy.employees.web.validators;
 
 
-import com.doozy.employees.web.dto.EmployeeDto;
+import com.doozy.employees.web.dto.RegisterEmployeeDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -14,7 +14,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 
   @Override
   public boolean isValid(Object obj, ConstraintValidatorContext context){
-    EmployeeDto user = (EmployeeDto) obj;
+    RegisterEmployeeDto user = (RegisterEmployeeDto) obj;
     return user.getPassword().equals(user.getMatchingPassword());
   }
 }

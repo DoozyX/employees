@@ -6,6 +6,9 @@ import com.doozy.employees.model.Employee;
 import com.doozy.employees.service.DepartmentService;
 import com.doozy.employees.service.EmployeeService;
 import com.doozy.employees.service.RoleService;
+import com.doozy.employees.web.dto.DepartmentDto;
+import com.doozy.employees.web.dto.mappers.DepartmentMapper;
+import com.doozy.employees.web.dto.mappers.EmployeeMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,17 +42,17 @@ public class DepartmentController {
 
 
 	@Layout("layouts/master")
-	@GetMapping("/new")
+	@GetMapping("/create")
 	public String addDepartment(Model model) {
-		model.addAttribute("department", new Department());
+		model.addAttribute("department", new DepartmentDto());
 		return "fragments/department-form";
 	}
 
 	@Layout("layouts/master")
-	@PostMapping("/save")
-	public String saveDepartment(@ModelAttribute Department department) {
-		//model.addAttribute("categories",categoryService.findAll());
-		mDepartmentService.save(department);
+	@PostMapping("/create")
+	public String insertDepartment(@ModelAttribute DepartmentDto departmentDto) {
+		Department department = new Department();
+		mDepartmentService.save(DepartmentMapper.mapDtoToDepartment(departmentDto, department));
 		return "redirect:/department/" + department.id;
 	}
 
@@ -67,8 +70,23 @@ public class DepartmentController {
 	}
 
 	@Layout("layouts/master")
+	@PostMapping("/{id}/edit")
+	public String saveDepartment(@PathVariable Long id, @ModelAttribute DepartmentDto departmentDto) {
+		if (mDepartmentService.findById(id).isPresent()) {
+			Department department = mDepartmentService.findById(id).get();
+			DepartmentMapper.mapDtoToDepartment(departmentDto, department);
+			mDepartmentService.save(department);
+			return "redirect:/department/" + id;
+		}
+		throw new IllegalStateException();
+	}
+
+	@Layout("layouts/master")
 	@GetMapping("/{departmentId}")
-	public String departmentFeed(@PathVariable Long departmentId, Model model, @RequestParam(required = false, defaultValue = "") String query, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "12") Integer size) {
+	public String departmentFeed(@PathVariable Long departmentId, Model
+			model, @RequestParam(required = false, defaultValue = "") String
+			                             query, @RequestParam(required = false, defaultValue = "0") Integer
+			                             page, @RequestParam(required = false, defaultValue = "12") Integer size) {
 		Page<Employee> employees;
 		if (query == null || query.isEmpty()) {
 			employees = mEmployeeService.findByDepartmentId(getPageable(page, size), departmentId);

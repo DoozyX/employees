@@ -10,9 +10,9 @@
 
 		<div class="row">
 			<strong> First Name: </strong>
-			<h3 th:text="${employee.firstName}"></h3>
+			<p th:text="${employee.firstName}"></p>
 			<strong> Last Name: </strong>
-			<h3 th:text="${employee.firstName}"></h3>
+			<p th:text="${employee.firstName}"></p>
 			<strong> Email: </strong>
 			<p th:text="${employee.email}"></p>
 			<strong> Gender: </strong>
@@ -26,7 +26,7 @@
 			<strong> ActivationCode: </strong>
 			<p th:text="${employee.activationCode}"></p>
 			<strong> Role: </strong>
-			<p th:text="${employee.role.name}"></p>
+			<p th:text="${employee.role?.name}"></p>
 			<strong>Department:</strong>
 			<a th:href="@{'/department/' + ${employee.department?.id}}"
 			   th:text="${employee.department?.name}">Department</a>
