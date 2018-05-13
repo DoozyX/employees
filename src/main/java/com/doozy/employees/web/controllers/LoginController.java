@@ -8,9 +8,8 @@ import com.doozy.employees.model.exceptions.UserNotFoundException;
 import com.doozy.employees.service.CaptchaService;
 import com.doozy.employees.service.EmployeeService;
 import com.doozy.employees.web.dto.RegisterEmployeeDto;
+import com.doozy.employees.web.dto.mappers.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,16 +35,11 @@ public class LoginController {
 
 	private final EmployeeService mEmployeeService;
 
-	private final Environment mEnvironment;
-
-	private final JavaMailSender mJavaMailSender;
 
 	@Autowired
-	public LoginController(CaptchaService captchaService, EmployeeService employeeService, Environment environment, JavaMailSender mailSender) {
+	public LoginController(CaptchaService captchaService, EmployeeService employeeService) {
 		this.captchaService = captchaService;
 		this.mEmployeeService = employeeService;
-		this.mEnvironment = environment;
-		this.mJavaMailSender = mailSender;
 	}
 
 	@Layout("layouts/master")
@@ -80,7 +74,8 @@ public class LoginController {
 				return new ModelAndView("fragments/register", "user", registerEmployeeDto);
 			}
 
-			Employee registered = mEmployeeService.registerNewEmployee(registerEmployeeDto);
+			Employee registered = new Employee();
+			registered = mEmployeeService.save(EmployeeMapper.mapRegisterEmployeeDtoToEmployee(registerEmployeeDto, registered));
 
 			if (registered == null) {
 				bindingResult.rejectValue("email", "message.regError");
@@ -89,8 +84,6 @@ public class LoginController {
 			if (bindingResult.hasErrors()) {
 				return new ModelAndView("fragments/register", "user", registerEmployeeDto);
 			} else {
-				mEmployeeService.createAndSendVerificationToken(registered);
-
 				model.addAttribute("user", registered);
 				assert registered != null;
 				return new ModelAndView("fragments/confirmation-email", "user", registered);
@@ -126,7 +119,7 @@ public class LoginController {
 				throw new UserNotFoundException();
 			}
 
-			mEmployeeService.createAndSendPasswordResetTokenForEmployee(user.get());
+			mEmployeeService.createPasswordResetTokenForEmployee(user.get());
 
 			model.addAttribute("confirmationEmail", email);
 		}

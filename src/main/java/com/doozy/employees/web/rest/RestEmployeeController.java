@@ -52,8 +52,7 @@ public class RestEmployeeController {
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Employee save(@RequestBody @Valid Employee employee) {
-		mEmployeeService.saveAndGeneratePasswordAndSendMail(employee);
-		return employee;
+		return mEmployeeService.save(employee);
 	}
 
 	//PATCH
@@ -63,8 +62,7 @@ public class RestEmployeeController {
 	public Employee update(@RequestBody @Valid Employee employee) {
 		Employee oldEmployee = mEmployeeService.findByEmail(employee.email).orElseThrow(() -> new EntityNotFoundException("No employee with id: " + employee.getId()));
 		employee.setPassword(oldEmployee.getPassword());
-		mEmployeeService.save(employee);
-		return employee;
+		return mEmployeeService.save(employee);
 	}
 
 	//DELETE

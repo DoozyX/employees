@@ -1,5 +1,7 @@
 package com.doozy.employees.service.impl;
 
+import com.doozy.employees.events.EmployeePasswordResetEvent;
+import com.doozy.employees.events.EmployeeRegisteredEvent;
 import com.doozy.employees.model.Employee;
 import com.doozy.employees.model.exceptions.DuplicateEmailException;
 import com.doozy.employees.persistance.EmployeeRepository;
@@ -7,14 +9,12 @@ import com.doozy.employees.persistance.PasswordResetTokenRepository;
 import com.doozy.employees.persistance.RoleRepository;
 import com.doozy.employees.persistance.VerificationTokenRepository;
 import com.doozy.employees.service.EmployeeService;
-import com.doozy.employees.service.MailService;
-import com.doozy.employees.web.dto.RegisterEmployeeDto;
 import com.doozy.employees.model.EmployeeVerificationToken;
 import com.doozy.employees.model.PasswordResetToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,23 +31,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private static final String EXPIRED_TOKEN = "expired";
 	public static final String VALID_TOKEN = "valid";
 
+	private final ApplicationEventPublisher mApplicationEventPublisher;
+
 	private final EmployeeRepository mEmployeeRepository;
 	private final RoleRepository mRoleRepository;
 
 	private final PasswordEncoder mPasswordEncoder;
 	private final VerificationTokenRepository mVerificationTokenRepository;
 	private final PasswordResetTokenRepository mPasswordResetTokenRepository;
-	private final MailService mMailService;
 
 	@Autowired
-	public EmployeeServiceImpl(EmployeeRepository employeeRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
-	                           VerificationTokenRepository verificationTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, MailService mailService) {
+	public EmployeeServiceImpl(ApplicationEventPublisher applicationEventPublisher, EmployeeRepository employeeRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
+	                           VerificationTokenRepository verificationTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository) {
+		mApplicationEventPublisher = applicationEventPublisher;
 		mEmployeeRepository = employeeRepository;
 		mRoleRepository = roleRepository;
 		mPasswordEncoder = passwordEncoder;
 		mVerificationTokenRepository = verificationTokenRepository;
 		mPasswordResetTokenRepository = passwordResetTokenRepository;
-		mMailService = mailService;
 	}
 
 	@Override
@@ -69,12 +70,36 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Employee save(Employee employee) {
 		if (employee.getRegistration() == null) {
+
+			boolean sendNewPassword = false;
+			if (this.checkDuplicateEmail(employee.getEmail())) {
+				throw new DuplicateEmailException();
+			}
+
+			if(employee.getPassword() == null) {
+				employee.setPassword("notSet");
+				sendNewPassword = true;
+			}
+
+			employee.setPassword(mPasswordEncoder.encode(employee.getPassword()));
+			if (mRoleRepository.findById(3L).isPresent()) {
+				employee.setRole(mRoleRepository.findById(3L).get());
+			} else {
+				throw new IllegalStateException();
+			}
+
 			employee.setActivated(false);
 			employee.setRegistration(LocalDateTime.now().toString());
-			employee.setPassword(mPasswordEncoder.encode(employee.getPassword()));
+			mEmployeeRepository.save(employee);
+			mApplicationEventPublisher.publishEvent(new EmployeeRegisteredEvent(employee));
+			if (sendNewPassword) {
+				createPasswordResetTokenForEmployee(employee);
+			}
+		} else {
+			mEmployeeRepository.save(employee);
 		}
 
-		return mEmployeeRepository.save(employee);
+		return employee;
 	}
 
 	@Override
@@ -88,72 +113,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee registerNewEmployee(RegisterEmployeeDto registerEmployeeDto) {
-		if (this.checkDuplicateEmail(registerEmployeeDto.getEmail())) {
-			throw new DuplicateEmailException();
-		}
-		Employee employee = new Employee(registerEmployeeDto);
-		employee.setPassword(mPasswordEncoder.encode(registerEmployeeDto.getPassword()));
-		if (mRoleRepository.findById(3L).isPresent()) {
-			employee.setRole(mRoleRepository.findById(3L).get());
-		} else {
-			throw new IllegalStateException();
-		}
-
-		employee.setActivated(false);
-		employee.setRegistration(LocalDateTime.now().toString());
-		return mEmployeeRepository.save(employee);
-	}
-
-	//TODO: check
-	@Override
-	public void createVerificationToken(Employee employee) {
-		EmployeeVerificationToken token = new EmployeeVerificationToken();
-		String randomToken = UUID.randomUUID().toString();
-		token.setToken(randomToken);
-		token.setUser(employee);
-		mVerificationTokenRepository.save(token);
+	public void setVerificationToken(Employee employee, String token) {
+		EmployeeVerificationToken employeeVerificationToken = new EmployeeVerificationToken();
+		employeeVerificationToken.setToken(token);
+		employeeVerificationToken.setUser(employee);
+		mVerificationTokenRepository.save(employeeVerificationToken);
 	}
 
 	@Override
-	public void createAndSendVerificationToken(Employee employee) {
-		EmployeeVerificationToken token = new EmployeeVerificationToken();
-		String randomToken = UUID.randomUUID().toString();
-		token.setToken(randomToken);
-		token.setUser(employee);
-		mVerificationTokenRepository.save(token);
-		String confirmationURL = "http://localhost:8080/registrationConfirm?token=" + randomToken;
-		mMailService.sendEmail(employee.getEmail(), "Activate your account", "Activate your account using the following url" + " \n" + confirmationURL);
-
-	}
-
-	@Override
-	public Employee saveAndGeneratePasswordAndSendMail(Employee employee) {
-		if (employee.getRegistration() == null) {
-			employee.setActivated(false);
-			employee.setRegistration(LocalDateTime.now().toString());
-		}
-		String randomToken = UUID.randomUUID().toString();
-		//TODO: LUL
-		employee.setPassword(randomToken);
-		//employee.setPassword(mPasswordEncoder.encode(randomToken));
-		mMailService.sendEmail(employee.getEmail(), "Reset password Token", "Your new password is:" + " \n" + randomToken);
-		return mEmployeeRepository.save(employee);
-
-	}
-
-	@Override
-	public void createAndSendPasswordResetTokenForEmployee(Employee employee) {
+	public void createPasswordResetTokenForEmployee(Employee employee) {
 		PasswordResetToken passwordResetToken = new PasswordResetToken();
 		String randomToken = UUID.randomUUID().toString();
 		passwordResetToken.setToken(randomToken);
 		passwordResetToken.setUser(employee);
 		mPasswordResetTokenRepository.save(passwordResetToken);
 
-		String url = "http://localhost:8080/change-password?id=" +
-				employee.getId() + "&token=" + randomToken;
-		String message = "Reset your password\r\n" + url;
-		mMailService.sendEmail(employee.getEmail(), "Reset Password", message);
+		mApplicationEventPublisher.publishEvent(new EmployeePasswordResetEvent(employee));
 	}
 
 	@Override

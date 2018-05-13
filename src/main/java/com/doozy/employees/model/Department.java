@@ -1,6 +1,8 @@
 package com.doozy.employees.model;
 
-import org.springframework.stereotype.Indexed;
+
+import org.hibernate.search.annotations.Indexed;
+
 import javax.persistence.*;
 import java.util.Objects;
 

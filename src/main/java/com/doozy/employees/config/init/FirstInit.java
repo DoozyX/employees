@@ -3,7 +3,7 @@ package com.doozy.employees.config.init;
 
 import com.doozy.employees.model.Employee;
 import com.doozy.employees.model.Role;
-import com.doozy.employees.service.EmployeeService;
+import com.doozy.employees.persistance.EmployeeRepository;
 import com.doozy.employees.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct;
 public class FirstInit {
 	private static Logger logger = LoggerFactory.getLogger(FirstInit.class);
 
-	private final EmployeeService mEmployeeService;
+	private final EmployeeRepository mEmployeeRepository;
 
 	private final RoleService mRoleService;
 
@@ -27,8 +27,8 @@ public class FirstInit {
 	private final Environment mEnvironment;
 
 	@Autowired
-	public FirstInit(EmployeeService employeeService, RoleService roleService, PasswordEncoder passwordEncoder, Environment environment) {
-		mEmployeeService = employeeService;
+	public FirstInit(EmployeeRepository employeeRepository, RoleService roleService, PasswordEncoder passwordEncoder, Environment environment) {
+		mEmployeeRepository = employeeRepository;
 		mRoleService = roleService;
 		mPasswordEncoder = passwordEncoder;
 		mEnvironment = environment;
@@ -53,16 +53,16 @@ public class FirstInit {
 
 		}
 
-		if (mEmployeeService.count() == 0) {
+		if (mEmployeeRepository.count() == 0) {
 			Employee employee = new Employee();
 			employee.setEmail(mEnvironment.getProperty("app.employee.admin.email"));
-			employee.setPassword(mEnvironment.getProperty("app.employee.admin.password"));
+			employee.setPassword(mPasswordEncoder.encode(mEnvironment.getProperty("app.employee.admin.password")));
 			if (mRoleService.findById(1L).isPresent()) {
 				employee.setRole(mRoleService.findById(1L).get());
 			}else {
 				throw new IllegalStateException();
 			}
-			mEmployeeService.save(employee);
+			mEmployeeRepository.save(employee);
 		}
 
 	}

@@ -2,6 +2,7 @@ package com.doozy.employees.web.dto.mappers;
 
 import com.doozy.employees.model.Employee;
 import com.doozy.employees.web.dto.EmployeeDto;
+import com.doozy.employees.web.dto.RegisterEmployeeDto;
 
 public class EmployeeMapper {
 
@@ -36,5 +37,15 @@ public class EmployeeMapper {
 		dto.setRole(employee.getRole());
 
 		return dto;
+	}
+
+	public static Employee mapRegisterEmployeeDtoToEmployee(RegisterEmployeeDto dto, Employee employee) {
+		employee.setEmail(dto.getEmail());
+		employee.setFirstName(dto.getFirstName());
+		employee.setLastName(dto.getLastName());
+		employee.setGender(dto.getGender());
+		employee.setPassword(dto.getPassword());
+
+		return employee;
 	}
 }

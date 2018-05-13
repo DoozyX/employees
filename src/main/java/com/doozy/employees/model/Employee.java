@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Indexed;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -75,6 +75,8 @@ public class Employee implements UserDetails {
 
 	@ManyToOne
 	public Role role;
+
+	public Provider provider;
 
 	@Override
 	public boolean equals(Object o) {

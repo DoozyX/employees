@@ -12,9 +12,7 @@ public interface EmployeeService extends BaseEntityService<Employee>{
 
 	Page<Employee> findByDepartmentId(Pageable pageable, Long departmentId);
 
-	Employee registerNewEmployee(RegisterEmployeeDto registerEmployeeDto);
-
-	void createVerificationToken(Employee user);
+	void setVerificationToken(Employee user, String token);
 
 	EmployeeVerificationToken getToken(String token);
 
@@ -26,9 +24,5 @@ public interface EmployeeService extends BaseEntityService<Employee>{
 
 	void changeUserPassword(Employee user, String password);
 
-	void createAndSendVerificationToken(Employee user);
-
-	Employee saveAndGeneratePasswordAndSendMail(Employee employee);
-
-	void createAndSendPasswordResetTokenForEmployee(Employee employee);
+	void createPasswordResetTokenForEmployee(Employee employee);
 }
