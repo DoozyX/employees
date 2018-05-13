@@ -122,7 +122,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		token.setToken(randomToken);
 		token.setUser(employee);
 		mVerificationTokenRepository.save(token);
-		String confirmationURL = "http://localhost:8066/registrationConfirm?token=" + randomToken;
+		String confirmationURL = "http://localhost:8080/registrationConfirm?token=" + randomToken;
 		mMailService.sendEmail(employee.getEmail(), "Activate your account", "Activate your account using the following url" + " \n" + confirmationURL);
 
 	}
@@ -150,7 +150,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		passwordResetToken.setUser(employee);
 		mPasswordResetTokenRepository.save(passwordResetToken);
 
-		String url = "http://localhost:8066/change-password?id=" +
+		String url = "http://localhost:8080/change-password?id=" +
 				employee.getId() + "&token=" + randomToken;
 		String message = "Reset your password\r\n" + url;
 		mMailService.sendEmail(employee.getEmail(), "Reset Password", message);
