@@ -24,16 +24,12 @@ import java.util.Optional;
 public class LandingController {
 
 	private final EmployeeService mEmployeeService;
-	private final DepartmentService mDepartmentService;
-	private final RoleService mRoleService;
 
 	private static final String PAGE_ORDER_BY_CRITERIA = "firstName";
 
 	@Autowired
-	public LandingController(EmployeeService employeeService, DepartmentService departmentService, RoleService roleService) {
+	public LandingController(EmployeeService employeeService) {
 		this.mEmployeeService = employeeService;
-		this.mDepartmentService = departmentService;
-		mRoleService = roleService;
 	}
 
 	@Layout("layouts/master")

@@ -99,6 +99,7 @@ public class LoginController {
 		}
 	}
 
+	@Layout("layouts/master")
 	@GetMapping(value = "/registrationConfirm")
 	public String confirmRegistration(Model model, @RequestParam("token") String token) {
 
@@ -109,7 +110,7 @@ public class LoginController {
 		}
 
 		if (mEmployeeService.validateVerificationToken(token).equals(VALID_TOKEN)) {
-			return "redirect:/login";
+			return "fragments/successful-confirmation";
 		} else {
 			model.addAttribute("message", "Invalid");
 			return "redirect:/badUser";
