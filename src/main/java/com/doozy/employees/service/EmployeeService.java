@@ -25,4 +25,6 @@ public interface EmployeeService extends BaseEntityService<Employee>{
 	void changeUserPassword(Employee user, String password);
 
 	void createPasswordResetTokenForEmployee(Employee employee);
+
+	Iterable<Employee> findByActivatedFalse();
 }

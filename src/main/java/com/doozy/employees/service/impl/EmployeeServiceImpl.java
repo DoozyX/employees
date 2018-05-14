@@ -132,6 +132,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
+	public Iterable<Employee> findByActivatedFalse() {
+		return mEmployeeRepository.findByActivatedFalse();
+	}
+
+	@Override
 	public Long count() {
 		return mEmployeeRepository.count();
 	}
