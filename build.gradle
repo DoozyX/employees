@@ -36,8 +36,8 @@ dependencies {
 
     //compile("org.springframework.data:spring-data-mongodb")
 
-    //compile('org.springframework:spring-websocket')
-    //compile('org.springframework:spring-messaging')
+    compile('org.springframework:spring-websocket')
+    compile('org.springframework:spring-messaging')
 
     compile('org.hibernate:hibernate-search-orm:5.5.6.Final')
 

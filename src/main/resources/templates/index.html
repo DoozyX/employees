@@ -33,47 +33,7 @@
 
 	<body>
 
-		<div id="wrapper">
-			<!-- Navigation -->
-			<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="./master.html">Employees</a>
-				</div>
-				<!-- /.navbar-header -->
 
-				<div th:replace="fragments/top"></div>
-				<!-- /.navbar-top-links -->
-				<div th:replace="fragments/sidebar"></div>
-			</nav>
-
-
-			<div id="page-wrapper" style="padding: 20px;">
-
-				<!--/*@thymesVar id="view" type=""*/-->
-				<div th:replace="${view}"></div>
-
-				<!--</div>-->
-			</div>
-
-			<!-- jQuery -->
-			<script src="/js/jquery.min.js"></script>
-
-			<!-- Bootstrap Core JavaScript -->
-			<script src="/js/bootstrap.min.js"></script>
-
-			<!-- Custom Theme JavaScript -->
-			<script src="/js/sb-admin-2.js"></script>
-
-			<script src="/js/sockjs.js"></script>
-			<script src="/js/stomp.js"></script>
-			<script src="/js/chat.js"></script>
-		</div>
 	</body>
 
 </html>

@@ -4,3 +4,7 @@
 \.idea/
 
 out/
+
+com\.doozy\.employees\.model\.Employee/
+
+com\.doozy\.employees\.model\.Department/
