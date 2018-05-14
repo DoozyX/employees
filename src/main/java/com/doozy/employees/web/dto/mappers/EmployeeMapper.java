@@ -13,8 +13,6 @@ public class EmployeeMapper {
 		employee.setGender(dto.getGender());
 		employee.setDepartment(dto.getDepartment());
 		employee.setBirthDate(dto.getBirthDate());
-		employee.setActivated(dto.isActivated());
-		employee.setRegistration(dto.getRegistration());
 		employee.setActivationCode(dto.getActivationCode());
 		employee.setRole(dto.getRole());
 

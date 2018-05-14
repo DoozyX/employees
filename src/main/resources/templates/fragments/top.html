@@ -2,7 +2,7 @@
 <ul class="nav navbar-top-links navbar-right" xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.w3.org/1999/xhtml">
   <li>
-    <a sec:authorize="hasAuthority('ADMIN', 'MANAGER')" href="/employee/create">Add employee</a>
+    <a sec:authorize="hasAuthority('ADMIN') || hasAuthority('MANAGER')" href="/employee/create">Add employee</a>
   </li>
   <li>
     <a sec:authorize="isAuthenticated()" href="/chat">Chat</a>

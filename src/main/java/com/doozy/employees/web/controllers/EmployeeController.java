@@ -84,7 +84,7 @@ public class EmployeeController {
 	public String saveEmployee(@PathVariable Long employeeId, @ModelAttribute EmployeeDto employeeDto) {
 		if (mEmployeeService.findById(employeeId).isPresent()) {
 			Employee employee = mEmployeeService.findById(employeeId).get();
-			EmployeeMapper.mapDtoToEmployee(employeeDto, employee);
+			employee = EmployeeMapper.mapDtoToEmployee(employeeDto, employee);
 			mEmployeeService.save(employee);
 			return "redirect:/employee/" + employeeId;
 		}

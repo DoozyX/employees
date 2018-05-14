@@ -51,6 +51,4 @@ public class DepartmentServiceImpl implements DepartmentService {
 	public Long count() {
 		return mDepartmentRepository.count();
 	}
-
-
 }

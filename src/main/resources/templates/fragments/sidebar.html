@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<div class="navbar-default sidebar" role="navigation" xmlns:th="http://www.thymeleaf.org">
+<div class="navbar-default sidebar" role="navigation" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.w3.org/1999/xhtml">
 	<div class="sidebar-nav navbar-collapse">
-		<ul class="nav" id="side-menu">
+		<ul class="nav" id="side-menu" sec:authorize="hasAuthority('ADMIN') || hasAuthority('MANAGER')">
 			<li class="sidebar-search">
-				<form method="get" th:action="@{/search}">
+				<form method="get" th:action="@{/search}" sec:authorize="hasAuthority('ADMIN') || hasAuthority('MANAGER')">
 					<div class="input-group custom-search-form">
 						<input type="text"
 						       name="query"
