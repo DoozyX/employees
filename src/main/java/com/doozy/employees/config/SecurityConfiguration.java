@@ -129,8 +129,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.logout().clearAuthentication(true).invalidateHttpSession(true).deleteCookies("remember-me")
 				.and()
 				.authorizeRequests().antMatchers("/api/*").hasAuthority("ADMIN")
-				//.and()
-				//.authorizeRequests().antMatchers("/edit-profile-change-password").hasAuthority("CHANGE_PASSWORD_AUTHORITY")
+				.and()
+				.authorizeRequests().antMatchers("/department/**").hasAuthority("ADMIN")
+				.and()
+				.authorizeRequests().antMatchers("/department/**").hasAuthority("MANAGER")
+				.and()
+				.authorizeRequests().antMatchers("/employee/**").hasAuthority("ADMIN")
+				.and()
+				.authorizeRequests().antMatchers("/employee/**").hasAuthority("MANAGER")
 				.and()
 				.authorizeRequests().antMatchers("/*").permitAll();
 
